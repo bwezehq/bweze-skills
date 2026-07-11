@@ -1,0 +1,52 @@
+{
+  "name": "bweze",
+  "version": "1.2.0",
+  "description": "BWEZE skills for building AI-native apps with Postgres, auth, storage, compute, hosting, AI gateway, realtime, payments, integrations, and diagnostics.",
+  "author": {
+    "name": "BWEZE",
+    "url": "https://bweze.com"
+  },
+  "homepage": "https://docs.bweze.com",
+  "repository": "https://github.com/bwezehq/bweze-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "bweze",
+    "ai-native",
+    "coding-agents",
+    "backend-as-a-service",
+    "baas",
+    "postgres",
+    "auth",
+    "storage",
+    "compute",
+    "hosting",
+    "ai-gateway",
+    "edge-functions",
+    "stripe",
+    "razorpay",
+    "rls"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "BWEZE",
+    "shortDescription": "Build AI-native apps on BWEZE.",
+    "longDescription": "Use BWEZE skills to build full-stack applications with BWEZE Backend-as-a-Service. The plugin covers app integration with `@bweze/sdk`, CLI infrastructure workflows, diagnostics, and third-party auth or payment integrations across database, auth, storage, functions, AI, realtime, email, payments, deployments, and RLS.",
+    "developerName": "BWEZE",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://bweze.com",
+    "privacyPolicyURL": "https://bweze.com/privacy",
+    "termsOfServiceURL": "https://bweze.com/terms",
+    "brandColor": "#17B26A",
+    "composerIcon": "./assets/bweze-favicon.png",
+    "logo": "./assets/bweze-favicon.png",
+    "defaultPrompt": [
+      "Use BWEZE to add authentication and database CRUD to this app.",
+      "Use BWEZE CLI to create tables, RLS policies, and deploy functions.",
+      "Use BWEZE Debug to diagnose this backend error."
+    ]
+  }
+}

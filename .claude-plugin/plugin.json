@@ -1,0 +1,29 @@
+{
+  "name": "bweze",
+  "description": "The backend platform for AI-native developers. A Postgres-based backend with auth, storage, compute, hosting, and AI gateway — built for coding agents. This plugin gives agents the full BWEZE surface: database CRUD with RLS, authentication, storage, edge functions, AI, realtime, Stripe payments, and deployments. Includes CLI infrastructure management, debugging diagnostics, and integration guides for third-party auth providers (Auth0, Clerk, Kinde, Stytch, WorkOS).",
+  "version": "1.2.0",
+  "author": {
+    "name": "BWEZE",
+    "url": "https://bweze.com"
+  },
+  "homepage": "https://docs.bweze.com",
+  "repository": "https://github.com/bwezehq/bweze-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "bweze",
+    "ai-native",
+    "coding-agents",
+    "ai-agents",
+    "backend-as-a-service",
+    "baas",
+    "postgres",
+    "auth",
+    "storage",
+    "compute",
+    "hosting",
+    "ai-gateway",
+    "edge-functions",
+    "stripe",
+    "rls"
+  ]
+}

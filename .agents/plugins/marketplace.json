@@ -1,0 +1,20 @@
+{
+  "name": "bweze",
+  "interface": {
+    "displayName": "BWEZE"
+  },
+  "plugins": [
+    {
+      "name": "bweze",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
