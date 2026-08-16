@@ -1,6 +1,6 @@
 # Deploy state
 
-History and per-deploy metadata for both frontend deployments (Vercel) and edge function deploys. The primary primitive for debugging **what happened during a deploy** — separate from runtime logs because deploy failures often never leave a runtime trace.
+History and per-deploy metadata for both frontend deployments (Vercel) and edge function deploys. The primary primitive for debugging **what happened during a deploy** - separate from runtime logs because deploy failures often never leave a runtime trace.
 
 ## Commands
 
@@ -32,28 +32,28 @@ npx @bweze/cli functions list
 
 ## Edge function deploys
 
-`function-deploy.logs` captures backend deploy events (compile errors, push failures, registration errors). `functions list` confirms the final state — if the function isn't there or `status != active`, the deploy didn't fully take.
+`function-deploy.logs` captures backend deploy events (compile errors, push failures, registration errors). `functions list` confirms the final state - if the function isn't there or `status != active`, the deploy didn't fully take.
 
 ## How to read
 
 For "frontend deploy failed":
 
-1. `deployments list` — find the failing deploy id
-2. `deployments status <id> --json` — read `status` and the `metadata` block; `webhookEventType` usually names the failure stage
-3. Reproduce locally: `npm run build` — server deploys often surface the same error that local build would (faster to debug locally)
+1. `deployments list` - find the failing deploy id
+2. `deployments status <id> --json` - read `status` and the `metadata` block; `webhookEventType` usually names the failure stage
+3. Reproduce locally: `npm run build` - server deploys often surface the same error that local build would (faster to debug locally)
 4. Verify `envVarKeys` matches what the app needs at runtime
 
 For "function deploy failed":
 
-1. `npx @bweze/cli logs function-deploy.logs --limit 50` — find the build/push error
-2. `npx @bweze/cli functions list` — confirm the function did or didn't make it into the active list
+1. `npx @bweze/cli logs function-deploy.logs --limit 50` - find the build/push error
+2. `npx @bweze/cli functions list` - confirm the function did or didn't make it into the active list
 3. Re-run `npx @bweze/cli functions deploy <slug>` if needed and capture stdout for the explicit error
 
 ## Boundaries
 
 - **Doesn't surface Vercel build logs inline.** Detailed Vercel build output lives in the Vercel dashboard or via `vercel logs`; this primitive surfaces the deploy *event metadata*.
 - **Doesn't include compute service (Fly) deploy errors.** For compute services use `npx @bweze/cli compute events <id>` (machine lifecycle); container stdout/stderr is not yet exposed.
-- **Distinct from runtime errors.** A function with a successful deploy can still error at invoke time — that's [logs](logs.md) `function.logs`, not this primitive.
+- **Distinct from runtime errors.** A function with a successful deploy can still error at invoke time - that's [logs](logs.md) `function.logs`, not this primitive.
 
 ## Example
 
@@ -85,5 +85,5 @@ npx @bweze/cli functions list
 
 ## Frequently paired with
 
-- [logs](logs.md) — `function-deploy.logs` is the source; `function.logs` is separate (runtime, not deploy)
-- [metadata](metadata.md) — verify the function ended up `active` after deploy
+- [logs](logs.md) - `function-deploy.logs` is the source; `function.logs` is separate (runtime, not deploy)
+- [metadata](metadata.md) - verify the function ended up `active` after deploy

@@ -2,11 +2,11 @@
 
 Send custom transactional HTML emails via `bweze.emails.send`. Routes through AWS SES under per-project tenant identities, with automatic List-Unsubscribe headers and unsubscribe filtering.
 
-> **🛑 No SMTP, no third-party packages.** `bweze.emails.send()` works on every paid project — no `nodemailer` / `resend` / `sendgrid` / `mailgun` / `postmark`, no `SMTP_HOST`, no API keys. The platform manages the SES sender. Custom sender domain → dashboard, not `package.json`.
+> **🛑 No SMTP, no third-party packages.** `bweze.emails.send()` works on every paid project - no `nodemailer` / `resend` / `sendgrid` / `mailgun` / `postmark`, no `SMTP_HOST`, no API keys. The platform manages the SES sender. Custom sender domain → dashboard, not `package.json`.
 >
-> **Scope.** This module sends **custom** transactional emails (welcome, receipt, newsletter, alerts). For auth flows (signup verification, password reset, invites), use `bweze.auth.*` — those ship on **every plan**, also no SMTP.
+> **Scope.** This module sends **custom** transactional emails (welcome, receipt, newsletter, alerts). For auth flows (signup verification, password reset, invites), use `bweze.auth.*` - those ship on **every plan**, also no SMTP.
 
-> **⚠️ Private preview.** Custom email is in private preview. The API may change; pin to a tested SDK version. Custom email requires a **paid plan** — free-tier projects can only use the built-in auth emails.
+> **⚠️ Private preview.** Custom email is in private preview. The API may change; pin to a tested SDK version. Custom email requires a **paid plan** - free-tier projects can only use the built-in auth emails.
 
 ## Setup
 
@@ -21,7 +21,7 @@ const bweze = createClient({
 })
 ```
 
-The anon JWT is sufficient — **no user sign-in required** to call `emails.send`. A signed-in user JWT also works.
+The anon JWT is sufficient - **no user sign-in required** to call `emails.send`. A signed-in user JWT also works.
 
 ## Send an Email
 
@@ -80,7 +80,7 @@ emails.send(options: {
 
 - **`from` is a display name only.** The actual sending address is always `noreply@<appkey>.send.bweze.com` (your project's SES tenant subdomain). You cannot send from `hello@yourdomain.com`.
 - Use `replyTo` to route replies to a real inbox you control.
-- The backend appends a per-recipient `List-Unsubscribe` footer and headers automatically — do not add your own.
+- The backend appends a per-recipient `List-Unsubscribe` footer and headers automatically - do not add your own.
 
 ### Limits
 
@@ -91,7 +91,7 @@ emails.send(options: {
 | Subject length | 1–500 chars |
 | Plan requirement | Paid plan (free tier returns `On-demand email service is only available for paid plans`) |
 
-Each address in `to`/`cc`/`bcc` counts as one delivery (per SES billing) — a single send to 30 addresses is 30 emails against your quota.
+Each address in `to`/`cc`/`bcc` counts as one delivery (per SES billing) - a single send to 30 addresses is 30 emails against your quota.
 
 ## REST Fallback
 
@@ -118,17 +118,17 @@ Success: `HTTP 200` with body `{}` (REST endpoint omits the wrapping; SDK adds `
 |---|---|---|
 | `On-demand email service is only available for paid plans` | Free tier project | Upgrade billing in the BWEZE dashboard |
 | `Rate limit exceeded. Try again in N minutes` | Hourly send cap reached | Wait `rateLimit.resetIn` seconds and retry, or upgrade plan |
-| `Invalid ARN provided` | Backend infra config issue (missing `AWS_ACCOUNT_ID` env on the cloud backend) | Not a client bug — file with BWEZE support |
+| `Invalid ARN provided` | Backend infra config issue (missing `AWS_ACCOUNT_ID` env on the cloud backend) | Not a client bug - file with BWEZE support |
 | `401 Unauthorized` | Bad/missing `Authorization` header | Re-init SDK with correct `anonKey` |
 | Email lands in spam | Cold SES tenant reputation | Warm up with a few low-volume sends; use a recognizable display name; avoid spammy HTML and link-heavy bodies |
 
 ## Common Mistakes
 
-- **Installing `nodemailer` / `resend` / `sendgrid` / `mailgun` / `postmark` or asking for SMTP credentials.** The built-in service is already wired in — `bweze.emails.send()` is all you need.
+- **Installing `nodemailer` / `resend` / `sendgrid` / `mailgun` / `postmark` or asking for SMTP credentials.** The built-in service is already wired in - `bweze.emails.send()` is all you need.
 - **Trying to set `from` to an email address.** Only the display-name part is honored. The address is fixed.
-- **Adding your own unsubscribe link.** The backend already injects one — adding another duplicates UX and confuses ESPs.
+- **Adding your own unsubscribe link.** The backend already injects one - adding another duplicates UX and confuses ESPs.
 - **Treating skipped recipients as failures.** `data.skipped` recipients have unsubscribed; the request still returns success.
-- **Sending one big request to 30 unrelated users without per-recipient personalization.** The backend already sends individual messages internally for personalized unsubscribe links — you just pass the array.
+- **Sending one big request to 30 unrelated users without per-recipient personalization.** The backend already sends individual messages internally for personalized unsubscribe links - you just pass the array.
 - **Calling from the free tier and reporting an "API bug".** Check `subscriptionPlan` first; the rejection is by design.
 
 ## Quick Reference

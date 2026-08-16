@@ -186,7 +186,7 @@ view/function and keep direct base-table privileges and policies narrow.
 
 ## Critical Vulnerabilities
 
-### 1. Infinite Recursive RLS (CRITICAL — Causes OOM Crash)
+### 1. Infinite Recursive RLS (CRITICAL - Causes OOM Crash)
 
 **This is the most dangerous RLS bug.** When RLS policies on table A call a function that queries table B, and table B's RLS calls a function that queries table A (or itself), PostgreSQL enters infinite recursion until the server runs out of memory and is killed by the OS.
 
@@ -206,11 +206,11 @@ companies → is_company_member() → queries company_memberships
 - PostgreSQL logs show `SIGKILL` or out-of-memory errors
 - `EXPLAIN` on the query runs forever
 
-**The fix — use SECURITY DEFINER:**
+**The fix - use SECURITY DEFINER:**
 
 ```sql
 -- DANGEROUS: This function runs as the calling role, so RLS is enforced
--- on every table it touches — creating recursion risk
+-- on every table it touches - creating recursion risk
 CREATE OR REPLACE FUNCTION is_company_member(company_uuid UUID)
 RETURNS BOOLEAN AS $$
   SELECT EXISTS (
@@ -272,11 +272,11 @@ CREATE POLICY "allow all reads" ON orders
 
 CREATE POLICY "tenant isolation" ON orders
   FOR SELECT USING (tenant_id = (SELECT auth.uid()));
--- ^ This is useless — the first policy already allows everything
+-- ^ This is useless - the first policy already allows everything
 ```
 
 **Checklist:**
-- [ ] Audit all policies per table — they combine with OR
+- [ ] Audit all policies per table - they combine with OR
 - [ ] No `USING (true)` on sensitive tables unless intentional (e.g., public blog posts)
 
 ### 4. View Bypass (MEDIUM)

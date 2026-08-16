@@ -10,7 +10,7 @@ The meta-primitive: hand a natural-language problem description to a backend-sid
 npx @bweze/cli diagnose --ai "<issue description>"
 ```
 
-The description should include: the error / failing URL / HTTP status / function slug — whatever concrete signal the user has.
+The description should include: the error / failing URL / HTTP status / function slug - whatever concrete signal the user has.
 
 ## When to use first
 
@@ -21,7 +21,7 @@ The description should include: the error / failing URL / HTTP status / function
 ## When to skip
 
 - The symptom clearly maps to one primitive (e.g., "Vercel deploy failed" → go straight to [deploy-state](deploy-state.md))
-- You're doing a proactive audit (no concrete error — that's [advisor](advisor.md))
+- You're doing a proactive audit (no concrete error - that's [advisor](advisor.md))
 - You already know exactly which log source has the error
 
 ## How to verify the output
@@ -30,17 +30,17 @@ The agent's diagnosis names primitives and observations. Re-check each:
 
 | If the diagnosis says... | Verify with... |
 |--------------------------|----------------|
-| "An RLS policy is blocking the request" | [policies](policies.md) — read the actual policy on that table |
+| "An RLS policy is blocking the request" | [policies](policies.md) - read the actual policy on that table |
 | "Slow query on table X" | [db-health](db-health.md) `slow-queries` + [logs](logs.md) `postgres.logs` for the actual query |
-| "Function is timing out" | [logs](logs.md) `function.logs` — read the actual timeout/error stack |
-| "Connection pool exhausted" | [db-health](db-health.md) `connections` — confirm the count and idle-in-transaction state |
-| "Missing index on column Y" | [db-health](db-health.md) `index-usage` + [advisor](advisor.md) performance — both should agree |
+| "Function is timing out" | [logs](logs.md) `function.logs` - read the actual timeout/error stack |
+| "Connection pool exhausted" | [db-health](db-health.md) `connections` - confirm the count and idle-in-transaction state |
+| "Missing index on column Y" | [db-health](db-health.md) `index-usage` + [advisor](advisor.md) performance - both should agree |
 
 If the verification disagrees with the diagnosis, **trust the primitive observation**, not the suggestion. Suggestions can be plausible-sounding but wrong (LLM may pattern-match on similar errors); raw `pg_stat` numbers and log lines can't lie.
 
 ## Boundaries
 
-- **Returns suggestions, not just data.** Different from every other primitive — treat the output as a starting hypothesis, not a verdict.
+- **Returns suggestions, not just data.** Different from every other primitive - treat the output as a starting hypothesis, not a verdict.
 - **Doesn't replace [advisor](advisor.md).** Advisor surfaces issues based on a static rule catalog; `--ai` reasons about a specific reported symptom. They serve different goals.
 - **Consumes the other primitives.** When this fails or seems off, fall back to the primitives directly.
 
@@ -64,4 +64,4 @@ npx @bweze/cli functions code newton
 
 ## Frequently paired with
 
-- All other primitives — `--ai` consumes them and you verify back against them. Treat AI assist as a router that points at primitives; the primitives are the ground truth.
+- All other primitives - `--ai` consumes them and you verify back against them. Treat AI assist as a router that points at primitives; the primitives are the ground truth.

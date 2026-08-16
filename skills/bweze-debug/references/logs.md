@@ -34,14 +34,14 @@ Each line has timestamp + source + level + message. When chasing a known-time sy
 
 1. Get the approximate timestamp from the user (when did the request fail?)
 2. Increase `--limit` until the window covers it (start 50, bump to 200 if needed)
-3. Look for the level (`ERROR` / `WARN`) and message — the message usually names the failing component
+3. Look for the level (`ERROR` / `WARN`) and message - the message usually names the failing component
 
-For request-correlated symptoms (single failing URL), look for the request line in `postgREST.logs` (REST calls) or `bweze.logs` (auth/realtime/function dispatch) — both include the URL path.
+For request-correlated symptoms (single failing URL), look for the request line in `postgREST.logs` (REST calls) or `bweze.logs` (auth/realtime/function dispatch) - both include the URL path.
 
 ## Boundaries
 
 - **Logs are streamed, not retained forever.** If the user reports something from days ago, you may not find it. State this explicitly instead of guessing.
-- **429 responses are NOT logged.** Rate limit hits don't appear in any source — confirm via [error-objects](error-objects.md) status code and check [metrics](metrics.md) for backend load context.
+- **429 responses are NOT logged.** Rate limit hits don't appear in any source - confirm via [error-objects](error-objects.md) status code and check [metrics](metrics.md) for backend load context.
 - **`diagnose logs` filters to errors only.** For warnings or info-level activity, query the specific source directly.
 
 ## Example
@@ -61,7 +61,7 @@ npx @bweze/cli logs postgres.logs --limit 100
 
 ## Frequently paired with
 
-- [error-objects](error-objects.md) — start there to pick the right source from the error code/HTTP status
-- [db-health](db-health.md) — when postgres.logs shows slow/locked queries, confirm with `pg_stat_*`
-- [policies](policies.md) — when postgREST.logs shows RLS denial, inspect which policy fired
-- [metadata](metadata.md) — when logs show auth/function/channel errors, verify the configured state
+- [error-objects](error-objects.md) - start there to pick the right source from the error code/HTTP status
+- [db-health](db-health.md) - when postgres.logs shows slow/locked queries, confirm with `pg_stat_*`
+- [policies](policies.md) - when postgREST.logs shows RLS denial, inspect which policy fired
+- [metadata](metadata.md) - when logs show auth/function/channel errors, verify the configured state

@@ -30,7 +30,7 @@ For CI/CD or agent use, pass `--json` along with all required flags:
 npx @bweze/cli create --json --name my-app --org-id org_123 --region us-east --template react
 ```
 
-`--json` skips value-collection prompts (text inputs like `Directory name:`, pickers like organization / region) and errors out if any required flag is missing. The `-y` flag is a different feature — it only auto-accepts Y/N confirmations and does NOT suppress value-collection prompts. For `create` specifically, `--json` alone is sufficient (there are no Y/N confirmations); for destructive commands like `delete`, agents should pass both `--json` and `-y`. Agents sandboxed from stdin (e.g., Codex) hang on any unsuppressed prompt — always pass `--json` for programmatic create.
+`--json` skips value-collection prompts (text inputs like `Directory name:`, pickers like organization / region) and errors out if any required flag is missing. The `-y` flag is a different feature - it only auto-accepts Y/N confirmations and does NOT suppress value-collection prompts. For `create` specifically, `--json` alone is sufficient (there are no Y/N confirmations); for destructive commands like `delete`, agents should pass both `--json` and `-y`. Agents sandboxed from stdin (e.g., Codex) hang on any unsuppressed prompt - always pass `--json` for programmatic create.
 
 ## What It Does
 
@@ -39,7 +39,7 @@ npx @bweze/cli create --json --name my-app --org-id org_123 --region us-east --t
 3. Fetches the project's API key
 4. Downloads template files (if not `empty`)
 5. Installs BWEZE Agent Skills via `npx skills add bwezehq/bweze-skills`
-6. Creates `.insforge/project.json` in the current directory
+6. Creates `.bweze/project.json` in the current directory
 
 ## Output
 
@@ -48,7 +48,7 @@ Project details: ID, name, appkey, region, and OSS host URL.
 ## Examples
 
 ```bash
-# Interactive — prompts for everything
+# Interactive - prompts for everything
 npx @bweze/cli create
 
 # Non-interactive with all options (agents, CI)
@@ -61,5 +61,5 @@ npx @bweze/cli create --json --name api-only --org-id org_abc --region eu-centra
 ## Notes
 
 - Requires authentication (`npx @bweze/cli login` first).
-- Creates `.insforge/project.json` which links the directory to the project.
+- Creates `.bweze/project.json` which links the directory to the project.
 - Agent skills are auto-installed into `.agents/skills/bweze/`.

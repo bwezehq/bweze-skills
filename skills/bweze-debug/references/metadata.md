@@ -1,6 +1,6 @@
 # Metadata
 
-Declarative dump of the backend's configured state: auth provider config, database tables, storage buckets, edge functions, AI models, realtime channels. The primary primitive for **what the project is set up to do** — used to confirm configuration matches expectations, find misconfiguration, and detect drift.
+Declarative dump of the backend's configured state: auth provider config, database tables, storage buckets, edge functions, AI models, realtime channels. The primary primitive for **what the project is set up to do** - used to confirm configuration matches expectations, find misconfiguration, and detect drift.
 
 ## Command
 
@@ -32,14 +32,14 @@ For "is this thing configured the way I think?":
 | 404 on `/api/database/records/<name>` | Database | Table exists in the dump? Spelling? |
 | Storage upload silently public | Storage | Bucket `public: true` when it should be `false` |
 | Edge function returns 404 | Functions | Function in list with `status: "active"`? |
-| `functions deploy` succeeded but invoke fails | Functions | Function `status` — may be inactive |
+| `functions deploy` succeeded but invoke fails | Functions | Function `status` - may be inactive |
 | Realtime channel "doesn't exist" | Realtime | Channel pattern matches what client subscribes to? `enabled: true`? |
 
 ## Boundaries
 
-- **Configuration state, not runtime state.** Tells you what's *declared*, not what's *currently broken*. A function with `status: active` may still be crashing on every invocation — pair with [logs](logs.md) (`function.logs`).
+- **Configuration state, not runtime state.** Tells you what's *declared*, not what's *currently broken*. A function with `status: active` may still be crashing on every invocation - pair with [logs](logs.md) (`function.logs`).
 - **Doesn't show RLS policies.** For RLS use [policies](policies.md); metadata only confirms the table exists.
-- **Snapshot at query time.** Just-applied migrations or deploys may not yet be reflected — wait a moment and re-query if you suspect staleness.
+- **Snapshot at query time.** Just-applied migrations or deploys may not yet be reflected - wait a moment and re-query if you suspect staleness.
 
 ## Example
 
@@ -52,7 +52,7 @@ npx @bweze/cli metadata --json
 # 2. In the auth section, confirm:
 #    - google provider enabled: true
 #    - redirect URLs include the exact callback the app uses
-#    (e.g., https://myapp.com/auth/callback — protocol + host + path must match)
+#    (e.g., https://myapp.com/auth/callback - protocol + host + path must match)
 
 # 3. If config looks right, check bweze.logs for the OAuth error
 npx @bweze/cli logs bweze.logs --limit 50
@@ -60,6 +60,6 @@ npx @bweze/cli logs bweze.logs --limit 50
 
 ## Frequently paired with
 
-- [logs](logs.md) — metadata says "configured" but logs say "actually broken"; pair to distinguish config drift vs runtime failure
-- [policies](policies.md) — metadata confirms the table; policies show the RLS gating it
-- [advisor](advisor.md) — security/health issues often name a configured object (bucket, secret, function) for inspection
+- [logs](logs.md) - metadata says "configured" but logs say "actually broken"; pair to distinguish config drift vs runtime failure
+- [policies](policies.md) - metadata confirms the table; policies show the RLS gating it
+- [advisor](advisor.md) - security/health issues often name a configured object (bucket, secret, function) for inspection

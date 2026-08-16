@@ -1,7 +1,7 @@
 # Traffic analytics for a BWEZE frontend project
 
 BWEZE gives each frontend project cookieless, privacy-preserving traffic
-analytics — page views, unique visitors (a salted daily hash, no PII), top
+analytics - page views, unique visitors (a salted daily hash, no PII), top
 paths, and a daily breakdown.
 
 ## 1. Add the beacon

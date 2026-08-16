@@ -4,7 +4,7 @@
 
 BWEZE governs `storage.objects` with PostgreSQL Row Level Security, not with app-side `WHERE uploaded_by = $1` filters. A signed-in caller runs as `authenticated` with their JWT `sub` available via `auth.jwt() ->> 'sub'`. Admin/API-key callers bypass RLS for admin workflows.
 
-**Core principle:** Policies are the contract. The user API does the cheapest possible thing on top of them — it does not re-implement authorization.
+**Core principle:** Policies are the contract. The user API does the cheapest possible thing on top of them - it does not re-implement authorization.
 
 ---
 
@@ -15,7 +15,7 @@ BWEZE governs `storage.objects` with PostgreSQL Row Level Security, not with app
 | `anon` | Unauthenticated callers | No valid session token |
 | `authenticated` | Logged-in end users | Valid session token in the request |
 
-The `auth.jwt()` helper returns the caller's full claims as `jsonb`. Most policies use `auth.jwt() ->> 'sub'` for ownership checks, but you can read any claim — `->> 'role'`, `->> 'org_id'`, custom claims from third-party providers (Better Auth, Clerk, Auth0, WorkOS, Stytch, Kinde).
+The `auth.jwt()` helper returns the caller's full claims as `jsonb`. Most policies use `auth.jwt() ->> 'sub'` for ownership checks, but you can read any claim - `->> 'role'`, `->> 'org_id'`, custom claims from third-party providers (Better Auth, Clerk, Auth0, WorkOS, Stytch, Kinde).
 
 ### What ships by default
 
@@ -121,7 +121,7 @@ GRANT SELECT ON storage.objects TO anon;
 GRANT USAGE ON SCHEMA storage TO anon;
 ```
 
-The bucket itself should also be marked `public` so the auth middleware fast-paths anonymous downloads. RLS still gates the row read — the `public` flag is just a routing hint.
+The bucket itself should also be marked `public` so the auth middleware fast-paths anonymous downloads. RLS still gates the row read - the `public` flag is just a routing hint.
 
 ---
 
@@ -233,9 +233,9 @@ BWEZE exposes two write surfaces against the same `storage.objects` table:
 | `/api/storage/...` REST | A signed-in end user, JWT in the request | The caller's `sub` |
 | `/storage/v1/s3/...` S3 protocol | An AWS-SDK / `aws-cli` client with a BWEZE S3 access key | `NULL` |
 
-Under the default owner-only SELECT policy, `NULL = '<sub>'` is never true (SQL three-valued logic), so **end users cannot see S3-uploaded rows through the user API**. Admin/API-key callers bypass RLS and see everything. The S3 surface itself doesn't run RLS — it uses admin credentials by design.
+Under the default owner-only SELECT policy, `NULL = '<sub>'` is never true (SQL three-valued logic), so **end users cannot see S3-uploaded rows through the user API**. Admin/API-key callers bypass RLS and see everything. The S3 surface itself doesn't run RLS - it uses admin credentials by design.
 
-When the S3 gateway overwrites a key that a REST user previously owned, the platform preserves `uploaded_by` — it does not clobber to NULL. That part is automatic.
+When the S3 gateway overwrites a key that a REST user previously owned, the platform preserves `uploaded_by` - it does not clobber to NULL. That part is automatic.
 
 If end users need to see S3-uploaded rows, expose them explicitly:
 
@@ -253,7 +253,7 @@ CREATE POLICY storage_objects_visible_select ON storage.objects
   );
 ```
 
-If your S3 ingester needs to attribute ownership instead, run an admin-side `UPDATE storage.objects SET uploaded_by = $sub WHERE bucket = $1 AND key = $2 AND uploaded_by IS NULL;` after the upload — admin bypasses RLS so the UPDATE just works.
+If your S3 ingester needs to attribute ownership instead, run an admin-side `UPDATE storage.objects SET uploaded_by = $sub WHERE bucket = $1 AND key = $2 AND uploaded_by IS NULL;` after the upload - admin bypasses RLS so the UPDATE just works.
 
 The cleanest answer is often to put REST-served and S3-served files in separate buckets so the `NULL = sub` foot-gun never comes up.
 
@@ -287,7 +287,7 @@ Adding `WHERE uploaded_by = $1` in your service code on top of the RLS policy du
 
 - **Per-operation policies are independent.** A permissive SELECT does NOT grant DELETE. The reverse is also true. Audit each of the four operations separately.
 - **Permissive vs restrictive policies.** Multiple matching policies OR together by default. If you want AND behavior, use `AS RESTRICTIVE`. Most storage policies are permissive (default).
-- **Out-of-band URLs bypass RLS.** Presigned S3 URLs and signed download links are redeemed against the storage backend directly — RLS does not fire on those redemptions. The platform code does an explicit RLS-scoped existence check before issuing the URL; if you build your own signed-URL flow, do the same.
+- **Out-of-band URLs bypass RLS.** Presigned S3 URLs and signed download links are redeemed against the storage backend directly - RLS does not fire on those redemptions. The platform code does an explicit RLS-scoped existence check before issuing the URL; if you build your own signed-URL flow, do the same.
 - **Admin always sees everything.** RLS only applies to `authenticated` and `anon`. API-key callers and dashboard inspectors bypass policies regardless of which pattern you pick.
 
 ---
@@ -298,14 +298,14 @@ Before shipping a storage RLS configuration, apply `storage.objects` policy chan
 
 - [ ] `ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY` is in place (already true on BWEZE installs since migration 036)
 - [ ] Policies target `storage.objects`
-- [ ] All four operations (SELECT, INSERT, UPDATE, DELETE) have policies — or you've consciously decided to deny one
+- [ ] All four operations (SELECT, INSERT, UPDATE, DELETE) have policies - or you've consciously decided to deny one
 - [ ] `auth.jwt() ->> 'sub'` is wrapped in `(SELECT ...)` for performance
 - [ ] `GRANT SELECT, INSERT, UPDATE, DELETE ON storage.objects TO authenticated` (and `anon` if your pattern allows it)
 - [ ] `GRANT USAGE ON SCHEMA storage TO authenticated` (and `anon` if applicable)
 - [ ] Mixed REST + S3 buckets either (a) live in separate buckets, (b) include `uploaded_by IS NULL OR ...` in the SELECT policy, or (c) attribute ownership in an admin-side UPDATE after S3 ingest
-- [ ] Tested as `authenticated`, not as superuser/admin — `psql` by default connects with elevated rights
+- [ ] Tested as `authenticated`, not as superuser/admin - `psql` by default connects with elevated rights
 
 ## References
 
 - [PostgreSQL RLS Documentation](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)
-- [Database access-control CLI reference](../../bweze-cli/references/database/access-control.md) — patterns for application tables, helper-function tricks, infinite-recursion gotchas
+- [Database access-control CLI reference](../../bweze-cli/references/database/access-control.md) - patterns for application tables, helper-function tricks, infinite-recursion gotchas

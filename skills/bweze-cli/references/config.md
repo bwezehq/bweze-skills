@@ -7,14 +7,14 @@ Deep reference for `config export | plan | apply`. The SKILL.md Configuration se
 ## Commands
 
 ```bash
-npx @bweze/cli config export [--out insforge.toml] [--force]
-npx @bweze/cli config plan   [--file insforge.toml]
-npx @bweze/cli config apply  [--file insforge.toml] [--dry-run] [--auto-approve]
+npx @bweze/cli config export [--out bweze.toml] [--force]
+npx @bweze/cli config plan   [--file bweze.toml]
+npx @bweze/cli config apply  [--file bweze.toml] [--dry-run] [--auto-approve]
 ```
 
 ## File location
 
-`insforge.toml` lives at the project root, alongside `package.json` and `.insforge/project.json`. Safe to commit to git.
+`bweze.toml` lives at the project root, alongside `package.json` and `.bweze/project.json`. Safe to commit to git.
 
 ## Output shapes (`--json` mode)
 
@@ -22,7 +22,7 @@ npx @bweze/cli config apply  [--file insforge.toml] [--dry-run] [--auto-approve]
 
 ```json
 {
-  "written": "/abs/path/to/insforge.toml",
+  "written": "/abs/path/to/bweze.toml",
   "config": {
     "auth": {
       "allowed_redirect_urls": ["https://app.com"],
@@ -87,7 +87,7 @@ npx @bweze/cli config apply  [--file insforge.toml] [--dry-run] [--auto-approve]
   "skipped": [
     {
       "key": "storage.max_file_size_mb",
-      "reason": "your backend doesn't expose storage.max_file_size_mb — upgrade the project to apply this section"
+      "reason": "your backend doesn't expose storage.max_file_size_mb - upgrade the project to apply this section"
     }
   ]
 }
@@ -97,13 +97,13 @@ npx @bweze/cli config apply  [--file insforge.toml] [--dry-run] [--auto-approve]
 
 | Mistake                                                                                                                       | What to do instead                                                                                                                |
 | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Calling raw admin APIs directly for TOML-supported settings                                                                   | Use `config apply` — it's version-aware; direct writes can silently drop on older backends                                        |
+| Calling raw admin APIs directly for TOML-supported settings                                                                   | Use `config apply` - it's version-aware; direct writes can silently drop on older backends                                        |
 | Treating `skipped[]` as an error to retry                                                                                     | It's intentional; surface verbatim with the upgrade ask and stop                                                                  |
-| Running `config apply` in `--json` mode without `--yes`                                                                       | Add `-y`/`--yes` (global) or `--auto-approve` (subcommand alias — same effect); otherwise fails fast with `CONFIRMATION_REQUIRED` |
+| Running `config apply` in `--json` mode without `--yes`                                                                       | Add `-y`/`--yes` (global) or `--auto-approve` (subcommand alias - same effect); otherwise fails fast with `CONFIRMATION_REQUIRED` |
 | Re-running with `--force` to "fix" a skip                                                                                     | `--force` is only for `export`'s overwrite gate; skips need a backend upgrade                                                     |
 | Managing OAuth apps, email templates, storage buckets, realtime channels, secrets, functions, or deployment env vars via TOML | Use their dedicated dashboard or CLI flows; TOML only carries supported project config knobs                                      |
 
 ## Related
 
-- `npx @bweze/cli metadata` — read-only view of all backend config slices
-- **bweze** app-integration skill `auth/sdk-integration.md` — how SDK code reads auth config at runtime
+- `npx @bweze/cli metadata` - read-only view of all backend config slices
+- **bweze** app-integration skill `auth/sdk-integration.md` - how SDK code reads auth config at runtime

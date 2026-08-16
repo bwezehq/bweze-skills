@@ -220,7 +220,7 @@ CREATE TRIGGER fulfill_stripe_paid_order_from_webhook
 
 ### Subscription Fulfillment
 
-Subscription events do not carry the app `metadata` sent at checkout. Resolve the billing subject from the subscription metadata embedded in the event payload — BWEZE stamps `bweze_subject_type` and `bweze_subject_id` at checkout, and Stripe snapshots it onto subscription-generated invoices as `parent.subscription_details.metadata`. Check `invoice.metadata` next, then fall back to `payments.customer_mappings` (the same order BWEZE uses internally):
+Subscription events do not carry the app `metadata` sent at checkout. Resolve the billing subject from the subscription metadata embedded in the event payload - BWEZE stamps `bweze_subject_type` and `bweze_subject_id` at checkout, and Stripe snapshots it onto subscription-generated invoices as `parent.subscription_details.metadata`. Check `invoice.metadata` next, then fall back to `payments.customer_mappings` (the same order BWEZE uses internally):
 
 ```sql
 CREATE OR REPLACE FUNCTION public.grant_subscription_access()

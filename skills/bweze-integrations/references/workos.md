@@ -5,9 +5,9 @@ WorkOS AuthKit handles authentication via middleware. On the server, `withAuth()
 
 ## Key packages
 
-- `@workos-inc/authkit-nextjs` — WorkOS AuthKit for Next.js
-- `@bweze/sdk` — BWEZE client
-- `jsonwebtoken` + `@types/jsonwebtoken` — for server-side JWT signing
+- `@workos-inc/authkit-nextjs` - WorkOS AuthKit for Next.js
+- `@bweze/sdk` - BWEZE client
+- `jsonwebtoken` + `@types/jsonwebtoken` - for server-side JWT signing
 
 ## Recommended Workflow
 
@@ -33,7 +33,7 @@ WorkOS AuthKit handles authentication via middleware. On the server, `withAuth()
 ### WorkOS JWT Template
 - In WorkOS Dashboard > Authentication > Sessions > Configure JWT Template
 - Claims: `role: "authenticated"`, `aud: "bweze-api"`, `user_email: {{ user.email }}`
-- `sub` is reserved — auto-included, do not add manually
+- `sub` is reserved - auto-included, do not add manually
 
 ### BWEZE Project
 - Create via `npx @bweze/cli create` or link via `npx @bweze/cli link --project-id <id>`
@@ -42,10 +42,10 @@ WorkOS AuthKit handles authentication via middleware. On the server, `withAuth()
 
 ## App structure
 
-- **Callback route**: `app/callback/route.ts` — export `handleAuth()` from `@workos-inc/authkit-nextjs`
+- **Callback route**: `app/callback/route.ts` - export `handleAuth()` from `@workos-inc/authkit-nextjs`
 - **Layout**: wrap with `AuthKitProvider` from `@workos-inc/authkit-nextjs/components` in `app/layout.tsx`
-- **Middleware**: `middleware.ts` — export `authkitMiddleware()`, match `['/', '/api/:path*']`
-- **Login route**: `app/login/route.ts` — get sign-in URL via `getSignInUrl()` and `redirect()`
+- **Middleware**: `middleware.ts` - export `authkitMiddleware()`, match `['/', '/api/:path*']`
+- **Login route**: `app/login/route.ts` - get sign-in URL via `getSignInUrl()` and `redirect()`
 
 **Next.js 16 limitation**: `withAuth({ ensureSignedIn: true })` can cause **cookie errors** in server components. Use `redirect('/login')` in the page instead.
 
@@ -110,7 +110,7 @@ export async function createBWEZEClient() {
 
 ## Database setup
 
-- WorkOS user IDs are strings (e.g. `user_01H...`), not UUIDs — use `TEXT` columns for `user_id`
+- WorkOS user IDs are strings (e.g. `user_01H...`), not UUIDs - use `TEXT` columns for `user_id`
 - Create a `requesting_user_id()` SQL function that extracts the `sub` claim from `auth.jwt()` as text
 - Set `user_id` column default to `requesting_user_id()` so it auto-populates on insert
 - Enable RLS and create policies that compare `user_id = requesting_user_id()`
@@ -140,6 +140,6 @@ $$;
 
 | Mistake | Solution |
 |---------|----------|
-| ❌ Using `withAuth({ ensureSignedIn: true })` in server components | ✅ Causes cookie errors on Next.js 16 — use `redirect('/login')` instead |
+| ❌ Using `withAuth({ ensureSignedIn: true })` in server components | ✅ Causes cookie errors on Next.js 16 - use `redirect('/login')` instead |
 | ❌ Forgetting `WORKOS_COOKIE_PASSWORD` | ✅ Session encryption fails silently without it |
-| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` — WorkOS IDs are strings, not UUIDs |
+| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` - WorkOS IDs are strings, not UUIDs |

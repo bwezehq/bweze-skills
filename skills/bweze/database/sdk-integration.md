@@ -90,7 +90,7 @@ const { data, error } = await bweze.database.rpc('get_user_stats', { user_id: '1
 
 ## Selecting a Schema
 
-Queries target the `public` schema by default — reach for `.schema()` only when you need a different one. The table name stays bare; `.schema()` maps to PostgREST's `Accept-Profile` (reads) / `Content-Profile` (writes) headers and chains in front of `from()` and `rpc()`:
+Queries target the `public` schema by default - reach for `.schema()` only when you need a different one. The table name stays bare; `.schema()` maps to PostgREST's `Accept-Profile` (reads) / `Content-Profile` (writes) headers and chains in front of `from()` and `rpc()`:
 
 ```javascript
 const { data, error } = await bweze.database
@@ -119,14 +119,14 @@ const bweze = createClient({
 })
 ```
 
-**You must grant access yourself.** On v2.2.3+ backends every non-internal schema you create is automatically reachable over the data API, but a new schema's tables stay **unreadable to `anon`/`authenticated` until you grant them** — exposure is not access. Grant in the same migration that creates the table, then RLS filters rows exactly as in `public`:
+**You must grant access yourself.** On v2.2.3+ backends every non-internal schema you create is automatically reachable over the data API, but a new schema's tables stay **unreadable to `anon`/`authenticated` until you grant them** - exposure is not access. Grant in the same migration that creates the table, then RLS filters rows exactly as in `public`:
 
 ```sql
 GRANT USAGE ON SCHEMA analytics TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA analytics TO anon, authenticated;
 ```
 
-**Don't target BWEZE-internal schemas.** Platform schemas (`auth`, `storage`, `system`, `payments`, …) are never exposed over the data API — keep app data in `public` or your own schemas so you never collide with them. Pointing `.schema()` at an internal schema (or any schema an older backend doesn't expose) fails with PostgREST `PGRST106` ("The schema must be one of the following: ...") rather than silently falling back to `public`.
+**Don't target BWEZE-internal schemas.** Platform schemas (`auth`, `storage`, `system`, `payments`, …) are never exposed over the data API - keep app data in `public` or your own schemas so you never collide with them. Pointing `.schema()` at an internal schema (or any schema an older backend doesn't expose) fails with PostgREST `PGRST106` ("The schema must be one of the following: ...") rather than silently falling back to `public`.
 
 ## Filters
 
@@ -237,7 +237,7 @@ CREATE TRIGGER posts_updated_at
 
 ### Bulk Upsert (HTTP API)
 
-Import CSV or JSON files directly into a table. No CLI equivalent yet — use the HTTP API.
+Import CSV or JSON files directly into a table. No CLI equivalent yet - use the HTTP API.
 
 ```http
 POST /api/database/advance/bulk-upsert
@@ -253,7 +253,7 @@ Fields:
 | Parameter | Effect |
 |-----------|--------|
 | Without `upsertKey` | INSERT all records |
-| With `upsertKey` | UPSERT — update existing rows on conflict, insert new ones |
+| With `upsertKey` | UPSERT - update existing rows on conflict, insert new ones |
 
 ---
 

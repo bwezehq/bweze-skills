@@ -66,7 +66,7 @@ export default async function(req: Request): Promise<Response> {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
-  // Create client with anon token — no authentication needed
+  // Create client with anon token - no authentication needed
   const client = createClient({
     baseUrl: Deno.env.get('BWEZE_BASE_URL'),
     anonKey: Deno.env.get('ANON_KEY')
@@ -143,12 +143,12 @@ export default async function(req: Request): Promise<Response> {
 
 ## Best Practices
 
-1. **Always handle CORS** — include preflight `OPTIONS` handler and CORS headers in every response
-2. **Store credentials as secrets** — use `npx @bweze/cli secrets add` for API keys, base URLs, etc.
+1. **Always handle CORS** - include preflight `OPTIONS` handler and CORS headers in every response
+2. **Store credentials as secrets** - use `npx @bweze/cli secrets add` for API keys, base URLs, etc.
 3. **Check available functions first** before invoking from frontend
    - Call `npx @bweze/cli functions list` to see existing functions
    - Verify the target function exists and has `status: "active"`
-4. **Always return a `Response`** — the runtime expects a `Response` object
+4. **Always return a `Response`** - the runtime expects a `Response` object
 
 ## Common Mistakes
 

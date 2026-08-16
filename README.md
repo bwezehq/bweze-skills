@@ -50,15 +50,15 @@ Build full-stack applications with BWEZE. This skill provides comprehensive guid
 <details>
 <summary><strong>bweze-frontend</strong> - BWEZE Frontend Hosting & Deployment</summary>
 
-Deploy and manage BWEZE **frontend projects** — web apps and sites on the hosting side (the Vercel/Coolify-style surface). This skill provides guidance for:
+Deploy and manage BWEZE **frontend projects** - web apps and sites on the hosting side (the Vercel/Coolify-style surface). This skill provides guidance for:
 
 - **Deploys**: git-based deploys, build & environment configuration, logs, terminal
-- **Custom domains**: buy a domain through BWEZE, connect one you already own (TXT + CNAME + verify), or claim a free `*.bweze.app` subdomain — all with automatic SSL
+- **Custom domains**: buy a domain through BWEZE, connect one you already own (TXT + CNAME + verify), or claim a free `*.bweze.app` subdomain - all with automatic SSL
 - **Analytics**: cookieless traffic analytics (views, visitors, top paths, by-day)
 - **Cron**: scheduled http(s) jobs on a 5-field cron
 - **Firewall**: allow/block IPs and CIDRs at the edge
 
-**Key distinction**: the frontend/hosting counterpart to the `bweze` (backend/data) skill. A BWEZE project is typed — `frontend` (web app) or `backend` (Postgres data stack).
+**Key distinction**: the frontend/hosting counterpart to the `bweze` (backend/data) skill. A BWEZE project is typed - `frontend` (web app) or `backend` (Postgres data stack).
 
 </details>
 
@@ -95,7 +95,7 @@ Diagnose errors, bugs, and performance issues in BWEZE projects. This skill guid
 - **Real-time**: Channel connection and subscription issues
 - **Deployments**: Frontend (Vercel) and edge function deploy failures
 
-**Key distinction**: This skill guides diagnostic command execution to locate problems — it does not provide fix suggestions.
+**Key distinction**: This skill guides diagnostic command execution to locate problems - it does not provide fix suggestions.
 
 </details>
 

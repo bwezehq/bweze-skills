@@ -258,7 +258,7 @@ CREATE TRIGGER fulfill_razorpay_order_from_webhook
   EXECUTE FUNCTION public.fulfill_razorpay_order();
 ```
 
-For subscriptions, resolve the billing subject from the subscription entity's `notes` in the event payload — BWEZE stamps `bweze_subject_type` and `bweze_subject_id` into notes at subscription creation (and creates the `payments.customer_mappings` row at the same time, so the mapping is also a safe fallback):
+For subscriptions, resolve the billing subject from the subscription entity's `notes` in the event payload - BWEZE stamps `bweze_subject_type` and `bweze_subject_id` into notes at subscription creation (and creates the `payments.customer_mappings` row at the same time, so the mapping is also a safe fallback):
 
 ```sql
 CREATE OR REPLACE FUNCTION public.grant_razorpay_subscription_access()

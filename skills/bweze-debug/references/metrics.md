@@ -59,6 +59,6 @@ npx @bweze/cli diagnose db
 
 ## Frequently paired with
 
-- [db-health](db-health.md) — DB is the most common bottleneck behind CPU/memory pressure
-- [logs](logs.md) — correlate metric spikes to log events at the same timestamp
-- [advisor](advisor.md) — `--severity critical` may already flag the underlying cause (e.g., missing index)
+- [db-health](db-health.md) - DB is the most common bottleneck behind CPU/memory pressure
+- [logs](logs.md) - correlate metric spikes to log events at the same timestamp
+- [advisor](advisor.md) - `--severity critical` may already flag the underlying cause (e.g., missing index)

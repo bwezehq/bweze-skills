@@ -1,6 +1,6 @@
 # npx @bweze/cli branch reset
 
-Reset a branch's database back to **T0** — the parent's snapshot at the moment the branch was created. Use when the branch is in a bad state and you'd rather start over than untangle it. Cheaper than `branch delete` + `branch create`: same EC2, same `appkey`, same `API_KEY` / `ANON_KEY` — only the database content is rewound.
+Reset a branch's database back to **T0** - the parent's snapshot at the moment the branch was created. Use when the branch is in a bad state and you'd rather start over than untangle it. Cheaper than `branch delete` + `branch create`: same EC2, same `appkey`, same `API_KEY` / `ANON_KEY` - only the database content is rewound.
 
 ## Syntax
 
@@ -19,28 +19,28 @@ Inherits the global `--json` and `--api-url` flags.
 1. Resolves `<name>` to a branch via the parent's branch list (works whether the directory is on the parent or on a sibling branch).
 2. Rejects the call unless `branch_state` is `ready` or `merged`. `creating` / `merging` / `resetting` / `deleted` all return 409 (`BRANCH_BUSY` or `BRANCH_NOT_READY`).
 3. Confirms (unless `--yes` or `--json`).
-4. `POST /projects/v1/branches/{branchId}/reset` — backend transitions `branch_state` to `resetting` and enqueues `pg_restore` against `branch_metadata.parent_t0.source_backup_s3_key` (the dump captured at branch creation).
-5. For `schema-only` branches, the backend re-runs `schema-only-truncate.sql` after the restore — same finalize chain as `branch create --mode schema-only`.
+4. `POST /projects/v1/branches/{branchId}/reset` - backend transitions `branch_state` to `resetting` and enqueues `pg_restore` against `branch_metadata.parent_t0.source_backup_s3_key` (the dump captured at branch creation).
+5. For `schema-only` branches, the backend re-runs `schema-only-truncate.sql` after the restore - same finalize chain as `branch create --mode schema-only`.
 6. CLI polls `GET /branches/{branchId}` every 3 s for up to 5 min until `branch_state` returns to a terminal state.
 
 ## Final state
 
-Reset **always lands at `ready`**, even if the branch entered reset from `merged`. A merged branch reset to T0 becomes usable again — you can edit it and merge it a second time without recreating the EC2.
+Reset **always lands at `ready`**, even if the branch entered reset from `merged`. A merged branch reset to T0 becomes usable again - you can edit it and merge it a second time without recreating the EC2.
 
-If the SSM restore fails halfway, the backend rolls `branch_state` back to the entry state (`ready` or `merged`). The CLI surfaces this via the polled state. **However**, `pg_restore` is destructive once it starts — the database may be in an indeterminate state between T0 and pre-reset. If reset fails, retry it, or fall back to a project backup (paid plans) instead of trying to recover the in-flight state.
+If the SSM restore fails halfway, the backend rolls `branch_state` back to the entry state (`ready` or `merged`). The CLI surfaces this via the polled state. **However**, `pg_restore` is destructive once it starts - the database may be in an indeterminate state between T0 and pre-reset. If reset fails, retry it, or fall back to a project backup (paid plans) instead of trying to recover the in-flight state.
 
 ## What reset does NOT touch
 
-- The branch's EC2 instance — same machine, same `appkey`, same URLs.
-- `API_KEY` / `ANON_KEY` / `JWT_SECRET` — unchanged. SDK / `.env` keep working without re-sourcing.
-- The parent project — completely untouched. Reset is local to the branch.
-- Edge functions deployed to the branch's `functions.definitions` table — these are part of the DB and **are** rolled back to T0 along with everything else. Redeploy any branch-specific functions after reset if you need them again.
-- Vercel deployments and Fly.io compute services — these live outside the database, so reset won't roll them back. Redeploy manually if their behavior depends on the schema you just rewound.
-- `branch_metadata.parent_t0` and `branch_created_at` — not modified. T0 is the same anchor as before.
+- The branch's EC2 instance - same machine, same `appkey`, same URLs.
+- `API_KEY` / `ANON_KEY` / `JWT_SECRET` - unchanged. SDK / `.env` keep working without re-sourcing.
+- The parent project - completely untouched. Reset is local to the branch.
+- Edge functions deployed to the branch's `functions.definitions` table - these are part of the DB and **are** rolled back to T0 along with everything else. Redeploy any branch-specific functions after reset if you need them again.
+- Vercel deployments and Fly.io compute services - these live outside the database, so reset won't roll them back. Redeploy manually if their behavior depends on the schema you just rewound.
+- `branch_metadata.parent_t0` and `branch_created_at` - not modified. T0 is the same anchor as before.
 
 ## Quota
 
-Reset does **not** count against the per-org or per-parent branch quota — quota is computed from the active branch count, and reset doesn't change it.
+Reset does **not** count against the per-org or per-parent branch quota - quota is computed from the active branch count, and reset doesn't change it.
 
 ## Concurrency
 
@@ -68,9 +68,9 @@ $ npx @bweze/cli branch reset feat-rls-fix
 ⚠ Reminder: edge functions, website, and compute aren’t touched by reset; redeploy if needed.
 ```
 
-Reset works the same on a `merged` branch — it lands at `ready` and the slot is reusable for another round of changes.
+Reset works the same on a `merged` branch - it lands at `ready` and the slot is reusable for another round of changes.
 
 ## See also
 
-- [branch overview](overview.md) — lifecycle commands and decision guide
-- [branch merge](merge.md) — merging a branch back to parent
+- [branch overview](overview.md) - lifecycle commands and decision guide
+- [branch merge](merge.md) - merging a branch back to parent

@@ -1,4 +1,4 @@
-# npx @bweze/cli compute deploy — deploy a backend container
+# npx @bweze/cli compute deploy - deploy a backend container
 
 > 🔒 **Private preview.** Compute services are not yet generally available.
 > Access is gated per-project; the API, CLI flags, error codes, and quotas
@@ -13,11 +13,11 @@
 > `unauthorized`. Use `npx @bweze/cli compute …` instead.
 
 Deploy a backend service. Two modes:
-1. **Source mode** (`compute deploy [dir]`): you have a Dockerfile. CLI shells out to `flyctl deploy --remote-only --build-only` using a short-lived per-app deploy token minted by BWEZE cloud. Build runs on Fly's remote builder; image is pushed to `registry.fly.io`. Cloud then launches the machine. **No local Docker daemon needed** — only `flyctl` on PATH.
+1. **Source mode** (`compute deploy [dir]`): you have a Dockerfile. CLI shells out to `flyctl deploy --remote-only --build-only` using a short-lived per-app deploy token minted by BWEZE cloud. Build runs on Fly's remote builder; image is pushed to `registry.fly.io`. Cloud then launches the machine. **No local Docker daemon needed** - only `flyctl` on PATH.
 2. **Image mode** (`compute deploy --image <url>`): deploy a pre-built image from any registry. **Nothing needed locally** beyond the BWEZE CLI.
 
 > Looking to deploy a **frontend** (static site / SPA / Next.js to Vercel)? Use
-> `npx @bweze/cli deployments deploy` instead — see
+> `npx @bweze/cli deployments deploy` instead - see
 > [deployments/deploy.md](deployments/deploy.md).
 
 ## Two modes
@@ -29,17 +29,17 @@ Deploy a backend service. Two modes:
 
 Both deploy to the same Fly.io infrastructure with the same options (`--port`, `--cpu`, `--memory`, `--region`, `--env`).
 
-**Anti-pattern: `flyctl deploy` directly from your laptop with your own credentials.** Returns 401 — the Fly account is BWEZE's, not yours. The CLI invokes flyctl for you with the *cloud-minted* per-app token, which is the only token that works.
+**Anti-pattern: `flyctl deploy` directly from your laptop with your own credentials.** Returns 401 - the Fly account is BWEZE's, not yours. The CLI invokes flyctl for you with the *cloud-minted* per-app token, which is the only token that works.
 
 ## Syntax
 
 ```bash
-# Source mode — flyctl remote build + push, then cloud launches the machine.
+# Source mode - flyctl remote build + push, then cloud launches the machine.
 # Requires `flyctl` on PATH (curl -L https://fly.io/install.sh | sh). NO Docker daemon needed.
 # Cloud mints a 20-min per-app token attenuated to one app + builder/wg with `else: deny`.
 npx @bweze/cli compute deploy <dir> --name <name> [options]
 
-# Image mode — deploy pre-built image (nothing needed locally).
+# Image mode - deploy pre-built image (nothing needed locally).
 npx @bweze/cli compute deploy --image <url> --name <name> [options]
 ```
 
@@ -48,8 +48,8 @@ npx @bweze/cli compute deploy --image <url> --name <name> [options]
 | Option | Description | Default |
 |--------|-------------|---------|
 | `--name <name>` | Service name (DNS-safe: lowercase, numbers, dashes) | **required** |
-| `[dir]` (positional) | Source directory containing a Dockerfile (source mode) | — |
-| `--image <url>` | Docker image URL (image mode) | — |
+| `[dir]` (positional) | Source directory containing a Dockerfile (source mode) | - |
+| `--image <url>` | Docker image URL (image mode) | - |
 | `--port <port>` | Container internal port | `8080` |
 | `--cpu <tier>` | CPU tier in Fly.io standard format `<kind>-<N>x` (see [CPU tier section](#cpu-tier-flyio-standard-format)) | `shared-1x` |
 | `--memory <mb>` | Memory in MB (any positive integer; Fly enforces per-tier bounds) | `512` |
@@ -62,7 +62,7 @@ Exactly one of `[dir]` or `--image` must be provided.
 ## Quick examples
 
 ```bash
-# Source mode — your project, your Dockerfile, flyctl on PATH (no Docker needed)
+# Source mode - your project, your Dockerfile, flyctl on PATH (no Docker needed)
 npx @bweze/cli compute deploy . --name my-api --port 8000
 
 # Off-the-shelf image
@@ -96,18 +96,18 @@ npx @bweze/cli compute deploy \
 The `GET` path never returns env values (encrypted at rest, no decrypt endpoint). To rotate **one** secret without wiping the others, use partial-merge flags on `compute update` instead of `--env`:
 
 ```bash
-# Partial merge — keeps untouched keys intact (repeatable flags)
+# Partial merge - keeps untouched keys intact (repeatable flags)
 npx @bweze/cli compute update <id> \
   --env-set DATABASE_URL=postgres://new-host \
   --env-set API_KEY=sk-... \
   --env-unset OLD_DEBUG_TOKEN
 
-# Wholesale replace — clears anything not in the JSON. Mutually exclusive
+# Wholesale replace - clears anything not in the JSON. Mutually exclusive
 # with --env-set / --env-unset.
 npx @bweze/cli compute update <id> --env '{"NODE_ENV":"production","DATABASE_URL":"..."}'
 ```
 
-## Source mode — worked example
+## Source mode - worked example
 
 ```bash
 # Project layout:
@@ -130,8 +130,8 @@ $ npx @bweze/cli compute deploy . --name my-bot --port 8080
 
 What happens behind the scenes:
 1. CLI looks up the service by `--name`. If missing, calls the cloud to provision a Fly app shell (no machine yet) and gets back the `flyAppId`.
-2. CLI requests a per-app deploy token from the cloud — a Fly macaroon attenuated with `IfPresent { ifs: [Apps[<thisAppOnly>: rwcdC], FeatureSet[builder, wg]], else: deny }` and a 20-min ValidityWindow. The org-wide Fly token never leaves BWEZE's servers.
-3. CLI shells out to `flyctl deploy --remote-only --build-only --app <flyAppId> --image-label cli-<ts>` with the token exported as `FLY_API_TOKEN`. flyctl ships the build context to Fly's remote builder, the build runs there, and the resulting image is pushed straight to `registry.fly.io/<app>:cli-<ts>`. **Nothing built or pushed from your laptop** — and no Docker daemon needed.
+2. CLI requests a per-app deploy token from the cloud - a Fly macaroon attenuated with `IfPresent { ifs: [Apps[<thisAppOnly>: rwcdC], FeatureSet[builder, wg]], else: deny }` and a 20-min ValidityWindow. The org-wide Fly token never leaves BWEZE's servers.
+3. CLI shells out to `flyctl deploy --remote-only --build-only --app <flyAppId> --image-label cli-<ts>` with the token exported as `FLY_API_TOKEN`. flyctl ships the build context to Fly's remote builder, the build runs there, and the resulting image is pushed straight to `registry.fly.io/<app>:cli-<ts>`. **Nothing built or pushed from your laptop** - and no Docker daemon needed.
 4. CLI sends `PATCH /api/compute/services/<id>` with `imageUrl=registry.fly.io/<app>:cli-<ts>`. Cloud calls Fly Machines API to launch (or restart with the new image) and returns the public URL.
 
 ### When to use source mode vs image mode
@@ -163,7 +163,7 @@ npx @bweze/cli compute deploy \
   --port <port>
 ```
 
-Any OCI registry works (GHCR, Docker Hub, etc.) as long as the image is publicly pullable. Private registries require per-project credential setup — contact support.
+Any OCI registry works (GHCR, Docker Hub, etc.) as long as the image is publicly pullable. Private registries require per-project credential setup - contact support.
 
 ## CPU Tier (Fly.io standard format)
 
@@ -171,7 +171,7 @@ Any OCI registry works (GHCR, Docker Hub, etc.) as long as the image is publicly
 - `<kind>` is `shared` or `performance`
 - `<N>` is the vCPU count
 
-BWEZE does **not** maintain a hardcoded allow-list — Fly.io is the source of truth for which sizes actually exist. If you pass an unsupported combination (e.g. `performance-32x`), Fly returns a clean validation error at machine-create time.
+BWEZE does **not** maintain a hardcoded allow-list - Fly.io is the source of truth for which sizes actually exist. If you pass an unsupported combination (e.g. `performance-32x`), Fly returns a clean validation error at machine-create time.
 
 Common standard tiers (current as of writing):
 
@@ -245,9 +245,9 @@ JSON mode (`--json`):
 | `COMPUTE_QUOTA_EXCEEDED` | At per-project quota (5 active services) | Delete unused services with `compute delete <id>`. If the dashboard shows fewer services than the error implies, contact support to clear orphans. |
 | `COMPUTE_INVALID_CPU_TIER` | `--cpu` doesn't match `<kind>-<N>x` | Use the format above, e.g. `performance-2x` |
 | `COMPUTE_IMAGE_NOT_AVAILABLE` | Fly registry alias propagation race exhausted retries (rare) | Re-run the deploy. The cloud silently retries this race 4 times with backoff `[2s, 4s, 8s]`; this error only surfaces if all retries failed. |
-| `COMPUTE_FLY_API_ERROR` | Generic Fly 4xx (bad config, region mismatch, etc.) | Read the structured `error` message — it's the upstream Fly response and usually points at the specific field. |
+| `COMPUTE_FLY_API_ERROR` | Generic Fly 4xx (bad config, region mismatch, etc.) | Read the structured `error` message - it's the upstream Fly response and usually points at the specific field. |
 | `flyctl is required for source-mode deploy` | flyctl isn't installed or not on PATH | Install: `curl -L https://fly.io/install.sh \| sh`, then reopen your shell. Or switch to `--image <pre-built-image>` |
-| `flyctl deploy ... unauthorized` | Per-app deploy token expired (20-min TTL) | Re-run `compute deploy` — the CLI mints a fresh token per invocation |
+| `flyctl deploy ... unauthorized` | Per-app deploy token expired (20-min TTL) | Re-run `compute deploy` - the CLI mints a fresh token per invocation |
 | `flyctl deploy --build-only failed` | Build error in your Dockerfile | Check the build output above (streamed from Fly's remote builder); fix the Dockerfile and retry |
 | `Image pull error` (image mode) | Registry private without BWEZE having creds | Push to a public image, or contact support to configure private registry creds |
 | `Unauthorized` from registry (image mode) | Image is private and BWEZE cloud doesn't have credentials | Make the image public, or use a public registry |
@@ -255,10 +255,10 @@ JSON mode (`--json`):
 ## FAQ
 
 **Q: Why does source mode need `flyctl` if it doesn't need Docker?**
-A: The CLI shells out to `flyctl deploy --remote-only --build-only` for the build step — flyctl knows how to ship a build context to Fly's remote builder, stream logs back, and push the result. Image mode skips that entirely (it's just an HTTP call telling the cloud which image URL to pull), so it needs nothing locally.
+A: The CLI shells out to `flyctl deploy --remote-only --build-only` for the build step - flyctl knows how to ship a build context to Fly's remote builder, stream logs back, and push the result. Image mode skips that entirely (it's just an HTTP call telling the cloud which image URL to pull), so it needs nothing locally.
 
 **Q: Where does the deploy token come from? Can a stolen token attack other tenants?**
-A: The cloud holds the org-wide Fly token; it never leaves BWEZE servers. Per `compute deploy` invocation it mints a fresh app-scoped macaroon with `IfPresent { ifs: [Apps[<oneApp>: rwcdC], FeatureSet[builder, wg]], else: deny }` + 20-min ValidityWindow. If exfiltrated within those 20 minutes, the token can deploy to that one app and use the org's remote builder to do so — but cannot read or mutate any other app, list org-level inventory, mint new tokens, or persist beyond TTL. Verified by the live e2e suite which probes `/v1/orgs/<slug>/machines`, `/v1/apps?org_slug=`, and `/v1/orgs/<slug>/volumes` and asserts each returns 4xx.
+A: The cloud holds the org-wide Fly token; it never leaves BWEZE servers. Per `compute deploy` invocation it mints a fresh app-scoped macaroon with `IfPresent { ifs: [Apps[<oneApp>: rwcdC], FeatureSet[builder, wg]], else: deny }` + 20-min ValidityWindow. If exfiltrated within those 20 minutes, the token can deploy to that one app and use the org's remote builder to do so - but cannot read or mutate any other app, list org-level inventory, mint new tokens, or persist beyond TTL. Verified by the live e2e suite which probes `/v1/orgs/<slug>/machines`, `/v1/apps?org_slug=`, and `/v1/orgs/<slug>/volumes` and asserts each returns 4xx.
 
 **Q: Can I use a private image from my own registry?**
 A: Public images (e.g. Docker Hub public, GHCR public) work out of the box. Private registry support requires per-project credential configuration; contact support to set this up.
@@ -267,13 +267,13 @@ A: Public images (e.g. Docker Hub public, GHCR public) work out of the box. Priv
 A: Use `compute update <service-id> --image <new-image-url>`. The machine is restarted with the new image; ~5s downtime.
 
 **Q: What happens to my service if Fly.io has an outage?**
-A: It's down. BWEZE runs your containers on Fly's infrastructure — Fly's uptime is your uptime. For HA, you'd typically deploy multiple services in different regions (future feature).
+A: It's down. BWEZE runs your containers on Fly's infrastructure - Fly's uptime is your uptime. For HA, you'd typically deploy multiple services in different regions (future feature).
 
 **Q: Why is the first request after idle slow?**
 A: v1 services scale to zero when idle and wake on the next request (~1s cold start on `shared-1x`). No flag to disable in v1; contact support if you need always-on.
 
 **Q: I see `MANIFEST_UNKNOWN` in a stack trace. What is it?**
-A: After `flyctl` pushes your image, Fly asynchronously aliases the digest from the builder's namespace to your app's namespace. Until that propagates (usually < 8 s) the Machines API returns `400 MANIFEST_UNKNOWN` even though the digest is correct. The BWEZE cloud silently retries 4 times with backoff `[2s, 4s, 8s]`, so you almost never see it. If retries exhaust, you get a structured `COMPUTE_IMAGE_NOT_AVAILABLE` 400 with `nextActions` telling you to re-run — re-runs are idempotent and typically succeed instantly because the alias has had time to propagate.
+A: After `flyctl` pushes your image, Fly asynchronously aliases the digest from the builder's namespace to your app's namespace. Until that propagates (usually < 8 s) the Machines API returns `400 MANIFEST_UNKNOWN` even though the digest is correct. The BWEZE cloud silently retries 4 times with backoff `[2s, 4s, 8s]`, so you almost never see it. If retries exhaust, you get a structured `COMPUTE_IMAGE_NOT_AVAILABLE` 400 with `nextActions` telling you to re-run - re-runs are idempotent and typically succeed instantly because the alias has had time to propagate.
 
 ## Notes
 

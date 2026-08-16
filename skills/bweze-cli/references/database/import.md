@@ -31,4 +31,4 @@ Displays filename, number of tables processed, and rows imported.
 ## Notes
 
 - The file must be a valid SQL file (e.g., from `npx @bweze/cli db export`).
-- Use `--truncate` carefully — it removes all existing data from tables before importing.
+- Use `--truncate` carefully - it removes all existing data from tables before importing.

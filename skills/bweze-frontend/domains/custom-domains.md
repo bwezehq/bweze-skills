@@ -1,11 +1,11 @@
 # Custom domains for a BWEZE frontend project
 
-Three ways to give a project a domain — a free `*.bweze.app` subdomain, a domain
+Three ways to give a project a domain - a free `*.bweze.app` subdomain, a domain
 you buy through BWEZE, or a domain you already own. All get automatic SSL.
 
 ## 1. Free `*.bweze.app` subdomain (instant)
 
-Connect `<label>.bweze.app` — it activates immediately (covered by the wildcard
+Connect `<label>.bweze.app` - it activates immediately (covered by the wildcard
 DNS + TLS), no DNS setup:
 
 ```bash
@@ -74,4 +74,4 @@ bweze projects domains list <projectId>
 ```
 
 Status values: `pending` (add DNS) → `verifying` → `verified`/`active`, or
-`error` (records not found yet — re-verify).
+`error` (records not found yet - re-verify).

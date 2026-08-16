@@ -71,7 +71,7 @@ When writing SQL for BWEZE, use these built-in references:
 | Reference | Description |
 |-----------|-------------|
 | `auth.uid()` | Returns current authenticated user's UUID (use in RLS policies) |
-| `auth.users(id)` | Built-in users table — use for foreign keys, not a custom table |
+| `auth.users(id)` | Built-in users table - use for foreign keys, not a custom table |
 | `system.update_updated_at()` | Built-in trigger function that auto-updates `updated_at` columns |
 
 ### Complete Example: Row-Level Data Fix

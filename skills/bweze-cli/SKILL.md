@@ -148,12 +148,12 @@ Project lifecycle (operates on the linked project unless `--project <id>` is giv
 - `npx @bweze/cli projects restore [--project <id>]` - bring a paused project back online. Only paused projects can be restored.
 - `npx @bweze/cli projects update-version [--wait] [--project <id>]` - update the backend to the latest BWEZE version (resolved automatically; no-op if already current). Causes a brief restart. Add `--wait` to block until it finishes instead of returning while queued.
 - `npx @bweze/cli projects upgrade-instance <type> [--project <id>]` - change the instance class. Valid: `nano`, `micro`, `small`, `medium`, `large`, `xl` (`xl` is the ceiling). Restarts the project and changes the bill.
-- `npx @bweze/cli projects delete --project <id>` - permanently delete a project and all of its resources. `--project` is required (it will not default to the linked project). Irreversible — confirm the exact project id with the user first; this is a guarded, human-in-the-loop operation, so do not auto-bypass the confirmation.
-- `npx @bweze/cli projects transfer <targetOrgId> --project <id>` - move a project to another organization (billing and access move with it). `--project` is required (it will not default to the linked project). Guarded, human-in-the-loop — confirm the source project and target org first.
+- `npx @bweze/cli projects delete --project <id>` - permanently delete a project and all of its resources. `--project` is required (it will not default to the linked project). Irreversible - confirm the exact project id with the user first; this is a guarded, human-in-the-loop operation, so do not auto-bypass the confirmation.
+- `npx @bweze/cli projects transfer <targetOrgId> --project <id>` - move a project to another organization (billing and access move with it). `--project` is required (it will not default to the linked project). Guarded, human-in-the-loop - confirm the source project and target org first.
 
 Configuration:
 
-- Use `npx @bweze/cli config export`, `config plan`, and `config apply` for supported `insforge.toml` knobs.
+- Use `npx @bweze/cli config export`, `config plan`, and `config apply` for supported `bweze.toml` knobs.
 - TOML is for config values only. SQL belongs in `db migrations`; function code belongs in `functions deploy`; frontend code belongs in `deployments deploy`; compute code/images belong in `compute deploy`.
 - If `config apply` returns `skipped[]`, report the skipped items and required backend upgrade. Do not retry with raw HTTP.
 
@@ -178,8 +178,8 @@ Inspect the organization's plan/consumption and manage its subscription. Org res
 - `npx @bweze/cli billing history [--org-id <id>]` - list past payments / invoices.
 - `npx @bweze/cli billing cycles [--org-id <id>]` - show the current and previous billing-cycle windows.
 - `npx @bweze/cli usage [--org-id <id>]` - show consumption for the current billing period (summary plus per-project breakdown: database, storage, egress, etc.).
-- `npx @bweze/cli billing upgrade <plan> [--org-id <id>]` - start a Stripe checkout to change the plan (`free | starter | pro | team | enterprise`). Opens the hosted checkout URL in the browser and also prints it. With `--json` it prints a JSON object (`{ checkoutUrl, sessionId }`) and does not open a browser — use this in headless/CI. No charge happens until the user completes checkout; the backend validates the plan and admin permission.
-- `npx @bweze/cli billing manage [--org-id <id>]` - open the Stripe customer portal to manage the subscription, payment method, or cancellation. Opens the portal URL in the browser and also prints it. With `--json` it prints a JSON object (`{ portalUrl }`) and does not open a browser — use this in headless/CI.
+- `npx @bweze/cli billing upgrade <plan> [--org-id <id>]` - start a Stripe checkout to change the plan (`free | starter | pro | team | enterprise`). Opens the hosted checkout URL in the browser and also prints it. With `--json` it prints a JSON object (`{ checkoutUrl, sessionId }`) and does not open a browser - use this in headless/CI. No charge happens until the user completes checkout; the backend validates the plan and admin permission.
+- `npx @bweze/cli billing manage [--org-id <id>]` - open the Stripe customer portal to manage the subscription, payment method, or cancellation. Opens the portal URL in the browser and also prints it. With `--json` it prints a JSON object (`{ portalUrl }`) and does not open a browser - use this in headless/CI.
 
 ## Backups
 
@@ -201,7 +201,7 @@ Operates on the linked project unless `--project <id>` is given.
 - `npx @bweze/cli storage upload <file> --bucket <name> [--key <objectKey>]` - upload an object.
 - `npx @bweze/cli storage download <objectKey> --bucket <name> [--output <path>]` - download an object.
 - `npx @bweze/cli storage s3-keys list` - list S3-compatible access keys (secret values are never shown).
-- `npx @bweze/cli storage s3-keys create [--description <text>]` - create an S3 access key. The secret access key is shown ONCE on creation — capture it immediately.
+- `npx @bweze/cli storage s3-keys create [--description <text>]` - create an S3 access key. The secret access key is shown ONCE on creation - capture it immediately.
 - `npx @bweze/cli storage s3-keys delete <id>` - delete an S3 access key. Tools using it stop working. Confirm intent first.
 
 For storage access-control behavior implemented through Postgres policies, use the storage-specific product docs or feature guidance. Do not treat storage internals as generic public-schema database tables unless the referenced storage docs explicitly say to.
@@ -277,7 +277,7 @@ Backend compute services:
 - `npx @bweze/cli secrets add <key> <value> [--reserved] [--expires <ISO date>]` - create a secret.
 - `npx @bweze/cli secrets update <key> [--value] [--active] [--reserved] [--expires]` - update a secret.
 - `npx @bweze/cli secrets delete <key>` - soft-delete a secret. Confirm intent first.
-- `npx @bweze/cli secrets rotate <api-key|anon-key> [--grace-hours <n>]` - rotate the project API key or anon key. The new key is printed ONCE — capture it. The old key keeps working during the grace period (server default if `--grace-hours` is omitted); update all consumers before it expires.
+- `npx @bweze/cli secrets rotate <api-key|anon-key> [--grace-hours <n>]` - rotate the project API key or anon key. The new key is printed ONCE - capture it. The old key keeps working during the grace period (server default if `--grace-hours` is omitted); update all consumers before it expires.
 
 ## Schedules
 
@@ -326,12 +326,12 @@ For application code with BWEZE or `@bweze/sdk`, use the `bweze` app-integration
 
 - `npx @bweze/cli posthog setup` ensures the dashboard has a PostHog connection, then prints the official PostHog wizard command plus the connected project's public `phc_` API key and host.
 - ⚠️ `posthog setup` alone does NOT instrument the app: no env vars, no SDK, no events until the wizard step happens. The wizard is interactive and may open a browser; ask the user to run it in their real terminal, or instrument manually using the printed `phc_` key/host (PostHog's public client key, safe in frontend env vars).
-- Cloud only: self-hosted backends don't expose the integration. Do not substitute a `phc_` key from a separate PostHog account into app env vars — the Analytics page reads from the server-side connection that only `posthog setup` populates; use the key it prints.
+- Cloud only: self-hosted backends don't expose the integration. Do not substitute a `phc_` key from a separate PostHog account into app env vars - the Analytics page reads from the server-side connection that only `posthog setup` populates; use the key it prints.
 
 ## Apify web scraper
 
-- `npx @bweze/cli webscraper apify connect` — one-time OAuth connect; stores a refreshable token in BWEZE.
-- `npx @bweze/cli webscraper apify login` — auth bridge: fetches the BWEZE-managed token, runs `apify login --token`, and installs Apify's official agent skills. Never run plain `apify login` (browser OAuth). On any Apify `401` / "not logged in", re-run `login`.
+- `npx @bweze/cli webscraper apify connect` - one-time OAuth connect; stores a refreshable token in BWEZE.
+- `npx @bweze/cli webscraper apify login` - auth bridge: fetches the BWEZE-managed token, runs `apify login --token`, and installs Apify's official agent skills. Never run plain `apify login` (browser OAuth). On any Apify `401` / "not logged in", re-run `login`.
 - See `references/webscraper/apify.md` for the full scrape → land → schedule workflow and size-based landing strategy.
 
 ## Non-Interactive CI/CD
@@ -346,7 +346,7 @@ npx @bweze/cli db query "SELECT 1 AS ok" --json
 
 ## Project Configuration File
 
-After `create` or `link`, `.insforge/project.json` contains the linked project ID, app key, region, API key, and backend URL.
+After `create` or `link`, `.bweze/project.json` contains the linked project ID, app key, region, API key, and backend URL.
 
-- Never commit `.insforge/project.json` or share it publicly.
+- Never commit `.bweze/project.json` or share it publicly.
 - Do not edit it manually. Use `npx @bweze/cli link` or branch commands to switch projects.

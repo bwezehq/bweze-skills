@@ -1,14 +1,14 @@
 
 # BWEZE + Clerk Integration Guide (Next.js)
 
-Clerk signs tokens with BWEZE's JWT secret directly via a **JWT Template** — no server-side signing needed. The app calls `getToken({ template: 'bweze' })` and forwards the token to the BWEZE client via `client.setAccessToken()`.
+Clerk signs tokens with BWEZE's JWT secret directly via a **JWT Template** - no server-side signing needed. The app calls `getToken({ template: 'bweze' })` and forwards the token to the BWEZE client via `client.setAccessToken()`.
 
 This guide targets **Next.js (App Router)**. The same pattern works in other React setups, but all examples and env vars assume Next.js.
 
 ## Key packages
 
-- `@clerk/nextjs` — Clerk SDK for Next.js (includes `clerkMiddleware`, `ClerkProvider`, hooks, and prebuilt `<SignIn>` / `<SignUp>` components)
-- `@bweze/sdk` — BWEZE client
+- `@clerk/nextjs` - Clerk SDK for Next.js (includes `clerkMiddleware`, `ClerkProvider`, hooks, and prebuilt `<SignIn>` / `<SignUp>` components)
+- `@bweze/sdk` - BWEZE client
 
 ## Recommended Workflow
 
@@ -35,7 +35,7 @@ This guide targets **Next.js (App Router)**. The same pattern works in other Rea
 - Signing algorithm: `HS256`
 - Signing key: the BWEZE JWT Secret
 - Claims: `{ "role": "authenticated", "aud": "bweze-api" }`
-- Do NOT add `sub` or `iss` — they are reserved and auto-included
+- Do NOT add `sub` or `iss` - they are reserved and auto-included
 
 ### BWEZE Project
 - Create via `npx @bweze/cli create` or link via `npx @bweze/cli link --project-id <id>`
@@ -61,7 +61,7 @@ export const config = {
 
 ### `app/layout.tsx`
 
-Wrap the app in `<ClerkProvider>` (it's a server component — no `'use client'` needed).
+Wrap the app in `<ClerkProvider>` (it's a server component - no `'use client'` needed).
 
 ```tsx
 import { ClerkProvider } from '@clerk/nextjs';
@@ -100,9 +100,9 @@ export default function Page() {
 - Create the client once with `createClient({ baseUrl, anonKey })`
 - Use Clerk's `useAuth()` to get `getToken`
 - In a `useEffect` keyed on `isSignedIn`, call `getToken({ template: 'bweze' })` and pipe the result into `client.setAccessToken(token)`
-- Clerk JWT templates default to **60-second expiry** — refresh the token on a ~50-second interval while the user is signed in; clear the token on sign-out
+- Clerk JWT templates default to **60-second expiry** - refresh the token on a ~50-second interval while the user is signed in; clear the token on sign-out
 - The template name `'bweze'` must match the Clerk dashboard exactly
-- `@bweze/sdk`'s `accessToken` config field (deprecated alias: `edgeFunctionToken`) is a **static string**, not a function — it cannot auto-refresh on its own, which is why we use `client.setAccessToken()` imperatively (it updates the HTTP client and the realtime token manager together)
+- `@bweze/sdk`'s `accessToken` config field (deprecated alias: `edgeFunctionToken`) is a **static string**, not a function - it cannot auto-refresh on its own, which is why we use `client.setAccessToken()` imperatively (it updates the HTTP client and the realtime token manager together)
 - This hook uses Clerk hooks, so the file must start with `'use client'`
 
 ```tsx
@@ -164,7 +164,7 @@ export function useBwezeClient(): { client: BWEZEClient; isReady: boolean } {
 
 ## Database setup
 
-- Clerk user IDs are strings (e.g. `user_2xPnG8KxVQr`), not UUIDs — use `TEXT` columns for `user_id`
+- Clerk user IDs are strings (e.g. `user_2xPnG8KxVQr`), not UUIDs - use `TEXT` columns for `user_id`
 - Create a `requesting_user_id()` SQL function that extracts the `sub` claim from `auth.jwt()` as text
 - Set `user_id` column default to `requesting_user_id()` so it auto-populates on insert
 - Enable RLS and create policies that compare `user_id = requesting_user_id()`
@@ -191,9 +191,9 @@ $$;
 
 | Mistake | Solution |
 |---------|----------|
-| ❌ Passing an async function as `accessToken` | ✅ SDK accepts only a static string there — use `client.setAccessToken()` instead |
-| ❌ Setting the token only once on mount | ✅ Refresh on a ~50s interval — Clerk JWT templates expire in 60s by default |
+| ❌ Passing an async function as `accessToken` | ✅ SDK accepts only a static string there - use `client.setAccessToken()` instead |
+| ❌ Setting the token only once on mount | ✅ Refresh on a ~50s interval - Clerk JWT templates expire in 60s by default |
 | ❌ Adding `sub` or `iss` to the JWT template | ✅ These are reserved claims, auto-included by Clerk |
-| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` — Clerk IDs are strings, not UUIDs |
-| ❌ Omitting `CLERK_SECRET_KEY` in `.env.local` | ✅ `clerkMiddleware()` reads it at runtime — add it alongside the publishable key |
+| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` - Clerk IDs are strings, not UUIDs |
+| ❌ Omitting `CLERK_SECRET_KEY` in `.env.local` | ✅ `clerkMiddleware()` reads it at runtime - add it alongside the publishable key |
 | ❌ Forgetting `'use client'` on `lib/bweze.ts` | ✅ The hook uses React + Clerk hooks; the file must be a client module |

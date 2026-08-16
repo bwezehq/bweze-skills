@@ -1,10 +1,10 @@
-# npx @bweze/cli deployments deploy — frontend hosting (Vercel)
+# npx @bweze/cli deployments deploy - frontend hosting (Vercel)
 
 Deploy a frontend project (static site / SPA / Next.js / etc.) to BWEZE
 hosting (via Vercel) from its source directory.
 
 > Looking to deploy a **backend** Docker container (API, worker)? Use
-> `npx @bweze/cli compute deploy` instead — see
+> `npx @bweze/cli compute deploy` instead - see
 > [compute-deploy.md](../compute-deploy.md).
 
 ## Syntax
@@ -37,7 +37,7 @@ Current directory (`.`) if not specified. In most projects, this should be the a
 
 The following are automatically excluded from the upload:
 - `node_modules/`, `.git/`, `.next/`, `dist/`, `build/`
-- `.env*`, `.DS_Store`, `.insforge/`, `*.log`
+- `.env*`, `.DS_Store`, `.bweze/`, `*.log`
 
 Because build output is excluded automatically, deploy the project source tree/root directory instead of pointing the command at `dist/`, `build/`, or `.next/`.
 
@@ -61,21 +61,21 @@ Notes:
 
 Frontend apps need env vars (API URL, anon key, etc.) to connect to BWEZE. Deploying without them produces a broken app. There are two ways to provide them:
 
-**Option A — Persistent env vars (recommended for repeated deploys):**
+**Option A - Persistent env vars (recommended for repeated deploys):**
 
 ```bash
 # Check what's already configured
 npx @bweze/cli deployments env list
 
-# Set env vars — these persist across all future deployments
+# Set env vars - these persist across all future deployments
 npx @bweze/cli deployments env set VITE_BWEZE_URL https://my-app.us-east.bweze.app
 npx @bweze/cli deployments env set VITE_BWEZE_ANON_KEY ik_xxx
 
-# Deploy the project source — persistent vars are applied automatically
+# Deploy the project source - persistent vars are applied automatically
 npx @bweze/cli deployments deploy .
 ```
 
-**Option B — Inline `--env` flag (one-off or override):**
+**Option B - Inline `--env` flag (one-off or override):**
 
 ```bash
 npx @bweze/cli deployments deploy . --env '{"VITE_BWEZE_URL": "https://my-app.us-east.bweze.app", "VITE_BWEZE_ANON_KEY": "ik_xxx"}'
@@ -201,7 +201,7 @@ For React single-page apps, ensure a `vercel.json` exists in the project root:
 1. **Deploy the project source directory**
    - Run the command from your app root, or pass that directory explicitly
    - Do not deploy `dist/`, `build/`, or `.next/` directly; the CLI excludes them automatically
-   - Never include `node_modules`, `.git`, `.env`, or `.insforge` in the upload
+   - Never include `node_modules`, `.git`, `.env`, or `.bweze` in the upload
    - Large assets should go to BWEZE Storage, not the deployment
 
 2. **Always set env vars before deploying**
@@ -223,7 +223,7 @@ For React single-page apps, ensure a `vercel.json` exists in the project root:
 | Including node_modules in zip | Exclude it - will be installed during build |
 | Including .env files | Use `deployments env set` or `--env` flag instead |
 | Deploying `dist/`, `build/`, or `.next/` directly | Deploy the project source/root directory instead; the CLI excludes build output automatically |
-| Deploying without env vars | Run `deployments env list` first — if empty, set vars with `deployments env set` or `--env` |
+| Deploying without env vars | Run `deployments env list` first - if empty, set vars with `deployments env set` or `--env` |
 | Missing VITE_* env vars | Add all required build-time variables with correct framework prefix |
 | Checking status too early | Wait 30sec-1min before checking status |
 | Missing vercel.json for SPA | Add rewrites config for client-side routing |

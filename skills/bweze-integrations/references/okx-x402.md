@@ -5,13 +5,13 @@ OKX acts as the **x402 facilitator** for the x402 HTTP payment protocol. Your se
 
 ## Key packages
 
-- `@bweze/sdk` — BWEZE client for DB writes, AI calls, and realtime subscription
-- `viem` — EIP-712 typed data signing + chain switching on the client
+- `@bweze/sdk` - BWEZE client for DB writes, AI calls, and realtime subscription
+- `viem` - EIP-712 typed data signing + chain switching on the client
 - No x402 SDK is required; the facilitator is plain REST
 
 ## Recommended Workflow
 
-Each step below maps 1:1 to an agent prompt. Run them in order — each step produces concrete files with a verification checkpoint before moving on.
+Each step below maps 1:1 to an agent prompt. Run them in order - each step produces concrete files with a verification checkpoint before moving on.
 
 ```text
 1. Schema & Realtime           → migrations/db_init.sql + db import
@@ -29,13 +29,13 @@ Each step below maps 1:1 to an agent prompt. Run them in order — each step pro
 - Go to [OKX Onchain OS Dev Portal](https://web3.okx.com/onchainos/dev-portal) and connect your wallet
 - Create a project, then link email + phone (required to enable API key creation)
 - Create API Key → save **API Key**, **Secret Key**, and the **passphrase** you set (secret shown only once)
-- **Do NOT reuse an OKX exchange trading API key** — it returns `Invalid Authority` (code 50114). The Web3 API is a separate system at `web3.okx.com/onchainos/dev-portal`, not `okx.com/account/my-api`
+- **Do NOT reuse an OKX exchange trading API key** - it returns `Invalid Authority` (code 50114). The Web3 API is a separate system at `web3.okx.com/onchainos/dev-portal`, not `okx.com/account/my-api`
 
 ### Payment recipient wallet
 
 - Any EVM address on X Layer (chainId 196) works as the payee
 - If using OKX Wallet, copy the **0x-prefixed** address (not the `XKO...` native format)
-- Fund the **paying** wallet (not the recipient) with USDG on X Layer for real settlements — OKX facilitator covers gas
+- Fund the **paying** wallet (not the recipient) with USDG on X Layer for real settlements - OKX facilitator covers gas
 
 ### BWEZE project
 
@@ -95,11 +95,11 @@ export function txUrl(chain: string | null, hash: string) {
 | `MOCK_OKX_FACILITATOR` | `true` for local/demo; unset or `false` for production | server |
 | `NEXT_PUBLIC_MOCK_OKX_FACILITATOR` | Mirror of `MOCK_OKX_FACILITATOR` if you want the UI to show a "mock mode" badge | client |
 
-**Mock mode contract:** `MOCK_OKX_FACILITATOR=true` skips real on-chain verify/settle on the server and returns a random tx hash. The client-side signing flow **does not change** — the browser still prompts the wallet for a real signature. This keeps the UX identical to production; only the server-side on-chain calls are mocked. Never set `MOCK_OKX_FACILITATOR=true` in production.
+**Mock mode contract:** `MOCK_OKX_FACILITATOR=true` skips real on-chain verify/settle on the server and returns a random tx hash. The client-side signing flow **does not change** - the browser still prompts the wallet for a real signature. This keeps the UX identical to production; only the server-side on-chain calls are mocked. Never set `MOCK_OKX_FACILITATOR=true` in production.
 
 ---
 
-# Step 1 — Schema & Realtime
+# Step 1 - Schema & Realtime
 
 Create a single-file migration and apply it with `db import`. This is idempotent and works for both first-time setup and re-runs in fresh environments.
 
@@ -174,7 +174,7 @@ npx @bweze/cli db query "select tgname from pg_trigger where tgrelid = 'x402_pay
 
 ---
 
-# Step 2 — Server Primitives & Env
+# Step 2 - Server Primitives & Env
 
 Install deps and create three library files. These have zero coupling to your route handler; you reuse them from any endpoint you want to monetize.
 
@@ -182,7 +182,7 @@ Install deps and create three library files. These have zero coupling to your ro
 npm install @bweze/sdk viem openai
 ```
 
-**`src/lib/okx-facilitator.ts`** — OKX HMAC-signed calls to `/verify` and `/settle`, with a MOCK branch for local dev.
+**`src/lib/okx-facilitator.ts`** - OKX HMAC-signed calls to `/verify` and `/settle`, with a MOCK branch for local dev.
 
 ```typescript
 import crypto from "crypto";
@@ -230,7 +230,7 @@ export async function settlePayment(paymentPayload: unknown, paymentRequirements
 }
 ```
 
-**`src/lib/x402.ts`** — challenge builder, 402 response, header codecs. All wire-format concerns live here.
+**`src/lib/x402.ts`** - challenge builder, 402 response, header codecs. All wire-format concerns live here.
 
 ```typescript
 const ASSET = "0x4ae46a509f6b1d9056937ba4500cb143933d2dc8"; // USDG on X Layer
@@ -245,7 +245,7 @@ export function buildPaymentRequirements(endpointUrl: string) {
     payTo: process.env.PAYMENT_RECIPIENT ?? "0x0000000000000000000000000000000000000000",
     maxTimeoutSeconds: 300,
     asset: ASSET,
-    extra: { name: "Global Dollar", version: "1" }, // EIP-712 domain — verify with scripts/check-domain.mjs
+    extra: { name: "Global Dollar", version: "1" }, // EIP-712 domain - verify with scripts/check-domain.mjs
   };
 }
 
@@ -274,7 +274,7 @@ export function buildPaymentResponseHeader(settlement: { txHash: string; payer: 
 }
 ```
 
-**`src/lib/bweze.ts`** — one file exports both clients so you don't instantiate the SDK twice.
+**`src/lib/bweze.ts`** - one file exports both clients so you don't instantiate the SDK twice.
 
 ```typescript
 import { createClient } from "@bweze/sdk";
@@ -296,7 +296,7 @@ export function createBrowserClient() {
 }
 ```
 
-**`.env`** — template with every required variable. Copy from `.env.example` and fill in.
+**`.env`** - template with every required variable. Copy from `.env.example` and fill in.
 
 ```env
 # OKX Web3 API (Step 1 of prerequisites)
@@ -315,7 +315,7 @@ BWEZE_SERVICE_KEY=
 # Model Gateway (dashboard → Model Gateway → Overview → Active OpenRouter key)
 OPENROUTER_API_KEY=
 
-# Demo mode — server skips on-chain calls, client still signs normally
+# Demo mode - server skips on-chain calls, client still signs normally
 MOCK_OKX_FACILITATOR=true
 NEXT_PUBLIC_MOCK_OKX_FACILITATOR=true
 ```
@@ -331,14 +331,14 @@ node --env-file=.env -e "['OKX_API_KEY','OKX_SECRET_KEY','OKX_PASSPHRASE','PAYME
 
 ---
 
-# Step 3 — Paid Endpoint & Aggregate API
+# Step 3 - Paid Endpoint & Aggregate API
 
 Two server routes:
 
-1. **`POST /api/report`** — the payment-gated endpoint. Gates the response behind 402, verifies + settles, records the payment, then **generates real paid content** (an AI-written crypto market report).
-2. **`GET /api/payments`** — dashboard backend. Returns recent rows + aggregate stats using the service key. The dashboard uses this for SSR / initial load so the first paint doesn't wait for the WebSocket.
+1. **`POST /api/report`** - the payment-gated endpoint. Gates the response behind 402, verifies + settles, records the payment, then **generates real paid content** (an AI-written crypto market report).
+2. **`GET /api/payments`** - dashboard backend. Returns recent rows + aggregate stats using the service key. The dashboard uses this for SSR / initial load so the first paint doesn't wait for the WebSocket.
 
-**Paid content shape** — the consumer expects this JSON:
+**Paid content shape** - the consumer expects this JSON:
 
 ```typescript
 {
@@ -423,7 +423,7 @@ Output ONLY the markdown. No preamble, no disclaimers.`;
     return completion.choices[0]?.message?.content ?? "_AI response was empty._";
   } catch (err) {
     console.error("[AI] generation failed:", err);
-    return "_AI service unavailable — falling back to raw data._";
+    return "_AI service unavailable - falling back to raw data._";
   }
 }
 
@@ -451,7 +451,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Settlement failed", reason: settlement.errorReason }, { status: 500 });
   }
 
-  // Record payment — ALWAYS check the error; settlement already moved money on-chain.
+  // Record payment - ALWAYS check the error; settlement already moved money on-chain.
   const bweze = createServiceClient();
   const { error: insertError } = await bweze.database.from("x402_payments").insert([{
     payer_address: settlement.payer,
@@ -481,7 +481,7 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-**`src/app/api/payments/route.ts`** — SSR / initial load feeder for the dashboard.
+**`src/app/api/payments/route.ts`** - SSR / initial load feeder for the dashboard.
 
 ```typescript
 import { createServiceClient } from "@/lib/bweze";
@@ -532,7 +532,7 @@ curl -sS http://localhost:3000/api/payments
 
 ---
 
-# Step 4 — Client Libs & Consumer Flow
+# Step 4 - Client Libs & Consumer Flow
 
 Client-side wallet signing (`x402-client.ts`) **with complete X Layer chain switching** plus the fetch → sign → retry state machine every consumer component uses.
 
@@ -584,7 +584,7 @@ export async function connectWallet(): Promise<WalletClient> {
   const client = createWalletClient({ chain: X_LAYER_CHAIN, transport: custom(window.ethereum) });
   await client.requestAddresses();
 
-  // Switch to X Layer if not already on it — otherwise signature verification will fail
+  // Switch to X Layer if not already on it - otherwise signature verification will fail
   const chainId = await client.getChainId();
   if (chainId !== 196) {
     try {
@@ -671,7 +671,7 @@ export async function signPayment(challenge: PaymentChallenge, walletClient: Wal
 }
 ```
 
-**Consumer state machine** — the pattern any "Try it" / "Pay" button implements. React-style reducer shown here; port to your framework as needed.
+**Consumer state machine** - the pattern any "Try it" / "Pay" button implements. React-style reducer shown here; port to your framework as needed.
 
 ```typescript
 type FlowState =
@@ -682,7 +682,7 @@ type FlowState =
   | { step: "done"; status: number; body: unknown }              // success (or non-402 error)
   | { step: "error"; message: string };
 
-// 1. Initial call — no payment header
+// 1. Initial call - no payment header
 async function tryEndpoint(path: string, setFlow: (s: FlowState) => void) {
   setFlow({ step: "loading" });
   const res = await fetch(path, { method: "POST" });
@@ -723,19 +723,19 @@ async function confirmPayment(path: string, challengeHeader: string, walletRef: 
 Key details:
 - Cache the `WalletClient` in a ref so the user isn't prompted to reconnect on every retry. Reset it on any failure.
 - The `payment-required` header is case-insensitive on the fetch response (HTTP is case-insensitive), but send as `PAYMENT-SIGNATURE` on retries to match what the server's `req.headers.get("PAYMENT-SIGNATURE")` looks for.
-- In **mock mode**, the client flow is identical — wallet still prompts for a real EIP-3009 signature. Only the server skips the on-chain calls.
+- In **mock mode**, the client flow is identical - wallet still prompts for a real EIP-3009 signature. Only the server skips the on-chain calls.
 
-**✓ Verify** — open the try-it UI (Step 5) in a browser and click the button; the wallet should prompt for a signature on X Layer, and a new row should appear in `x402_payments`.
+**✓ Verify** - open the try-it UI (Step 5) in a browser and click the button; the wallet should prompt for a signature on X Layer, and a new row should appear in `x402_payments`.
 
 ---
 
-# Step 5 — Realtime Dashboard
+# Step 5 - Realtime Dashboard
 
 The dashboard combines three feeds into one UI:
 
-1. **Initial data** — fetched once from `GET /api/payments` (gives stats + last 50 rows without waiting for WebSocket)
-2. **Realtime stream** — subscribe to the `x402_payments` channel, listen for `INSERT_x402_payments`, merge into state
-3. **Try-it playground** — the consumer state machine from Step 4, renders the paid `report` on success
+1. **Initial data** - fetched once from `GET /api/payments` (gives stats + last 50 rows without waiting for WebSocket)
+2. **Realtime stream** - subscribe to the `x402_payments` channel, listen for `INSERT_x402_payments`, merge into state
+3. **Try-it playground** - the consumer state machine from Step 4, renders the paid `report` on success
 
 **Browser SDK singleton** (avoid creating multiple WebSocket clients):
 
@@ -795,7 +795,7 @@ export function usePayments() {
 }
 ```
 
-**UI composition** (framework-agnostic outline — see [demo source](https://github.com/bwezehq/bweze-integration/tree/main/payment/okx-x402/src/components) for complete Tailwind components):
+**UI composition** (framework-agnostic outline - see [demo source](https://github.com/bwezehq/bweze-integration/tree/main/payment/okx-x402/src/components) for complete Tailwind components):
 
 ```tsx
 <Dashboard>
@@ -817,7 +817,7 @@ export function usePayments() {
 </Dashboard>
 ```
 
-**ReportView** — renders the paid content from `POST /api/report`:
+**ReportView** - renders the paid content from `POST /api/report`:
 
 ```typescript
 import ReactMarkdown from "react-markdown";
@@ -850,18 +850,18 @@ export function ReportView({ body }: { body: { report: any; payment: any } }) {
 
 **✓ Verify**
 
-1. Open the dashboard — stats + recent rows should populate within one second (from `/api/payments`).
+1. Open the dashboard - stats + recent rows should populate within one second (from `/api/payments`).
 2. Click **Try it** → wallet prompts → confirm signature → response renders the AI-generated report + tx link.
 3. The new row should **flash into the live log without a page refresh** (realtime trigger working).
-4. Open a second browser tab with the dashboard; trigger a payment in one — the other tab should update live.
+4. Open a second browser tab with the dashboard; trigger a payment in one - the other tab should update live.
 
 ---
 
-# Step 6 — Diagnostics & Go-Live
+# Step 6 - Diagnostics & Go-Live
 
 Before removing `MOCK_OKX_FACILITATOR=true` and accepting real payments, run both diagnostic scripts to confirm your EIP-712 domain and your USDG contract assumptions match on-chain reality. These catch 90% of first-deploy `Invalid Authority` errors.
 
-**`scripts/check-domain.mjs`** — compute `DOMAIN_SEPARATOR` for candidate `(name, version)` pairs and compare against the on-chain value.
+**`scripts/check-domain.mjs`** - compute `DOMAIN_SEPARATOR` for candidate `(name, version)` pairs and compare against the on-chain value.
 
 ```javascript
 import { keccak256, encodeAbiParameters, stringToBytes } from "viem";
@@ -896,7 +896,7 @@ for (const [name, version] of candidates) {
 console.log("On-chain:", ON_CHAIN_DOMAIN);
 ```
 
-**`scripts/check-usdg.mjs`** — read `name()`, `version()`, `DOMAIN_SEPARATOR()`, and `eip712Domain()` directly from the USDG contract. Use the output of `DOMAIN_SEPARATOR` to populate `ON_CHAIN_DOMAIN` in `check-domain.mjs`.
+**`scripts/check-usdg.mjs`** - read `name()`, `version()`, `DOMAIN_SEPARATOR()`, and `eip712Domain()` directly from the USDG contract. Use the output of `DOMAIN_SEPARATOR` to populate `ON_CHAIN_DOMAIN` in `check-domain.mjs`.
 
 ```javascript
 import { createPublicClient, http } from "viem";
@@ -962,13 +962,13 @@ node scripts/check-domain.mjs
 ## Go-live checklist
 
 - [ ] `scripts/check-usdg.mjs` prints expected `name` / `version` / `DOMAIN_SEPARATOR`
-- [ ] `scripts/check-domain.mjs` shows **exactly one `✓`** — the pair you have in `buildPaymentRequirements.extra`
+- [ ] `scripts/check-domain.mjs` shows **exactly one `✓`** - the pair you have in `buildPaymentRequirements.extra`
 - [ ] `MOCK_OKX_FACILITATOR` unset (or `false`) in prod env
 - [ ] `NEXT_PUBLIC_MOCK_OKX_FACILITATOR` unset on client too (no misleading "mock" badge in prod)
 - [ ] Paying wallet funded with USDG on X Layer (payer pays USDG; OKX facilitator covers gas)
 - [ ] `PAYMENT_RECIPIENT` is a 0x-prefixed EVM address (not XKO... native format)
 - [ ] Make one real payment end-to-end: wallet prompts → settles → row in `x402_payments` → tx hash resolves on `okx.com/web3/explorer/xlayer/tx/{hash}`
-- [ ] Monitor `postgres.logs` and app logs for `[payment-log] insert failed` — this means money moved but the record is lost; reconcile manually
+- [ ] Monitor `postgres.logs` and app logs for `[payment-log] insert failed` - this means money moved but the record is lost; reconcile manually
 
 ---
 
@@ -980,10 +980,10 @@ node scripts/check-domain.mjs
 | ❌ EIP-712 domain `name: "USDG"` / `version: "2"` | ✅ Run `scripts/check-domain.mjs`; correct values are `name: "Global Dollar"`, `version: "1"` |
 | ❌ Missing `chainIndex: "196"` on `/verify` | ✅ Both `/verify` and `/settle` require `chainIndex` (else `50014 chainIndex not empty or should be numeric`) |
 | ❌ Wallet on Ethereum mainnet when user clicks pay | ✅ `connectWallet()` must call `wallet_switchEthereumChain` → fallback to `wallet_addEthereumChain` on error 4902 |
-| ❌ Ignoring result of `insert(...)` after settlement | ✅ Always check `{ error }` — settlement already took money; a silent DB failure loses the record |
+| ❌ Ignoring result of `insert(...)` after settlement | ✅ Always check `{ error }` - settlement already took money; a silent DB failure loses the record |
 | ❌ `tx_hash text not null` without UNIQUE | ✅ Add `UNIQUE` to prevent duplicate records from retries |
 | ❌ Hardcoding `xlayer` in explorer URL | ✅ Use `payment.chain` column + `txUrl()` helper for multi-chain support |
-| ❌ `MOCK_OKX_FACILITATOR=true` in production | ✅ Demo mode only — removes on-chain guarantee; always unset in prod |
+| ❌ `MOCK_OKX_FACILITATOR=true` in production | ✅ Demo mode only - removes on-chain guarantee; always unset in prod |
 | ❌ Dashboard loads empty then pops | ✅ SSR initial data from `/api/payments` before subscribing to realtime |
-| ❌ Creating multiple `createClient` instances in the browser | ✅ Singleton via `getBrowserClient()` — otherwise duplicate WebSocket connections |
+| ❌ Creating multiple `createClient` instances in the browser | ✅ Singleton via `getBrowserClient()` - otherwise duplicate WebSocket connections |
 | ❌ Forgetting RLS on `x402_payments` | ✅ Enable RLS + `public_read` SELECT policy; writes go through service key which bypasses RLS |

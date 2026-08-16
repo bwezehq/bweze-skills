@@ -20,12 +20,12 @@ This skill covers integrating **third-party providers** with BWEZE. Currently tw
 
 | Provider | Guide | When to use |
 |----------|-------|-------------|
-| [Clerk](references/clerk.md) | Clerk JWT Templates + BWEZE RLS | Clerk signs tokens directly via JWT Template — no server-side signing needed |
+| [Clerk](references/clerk.md) | Clerk JWT Templates + BWEZE RLS | Clerk signs tokens directly via JWT Template - no server-side signing needed |
 | [Auth0](references/auth0.md) | Auth0 Actions + BWEZE RLS | Auth0 uses a post-login Action to embed claims into the access token |
 | [WorkOS](references/workos.md) | WorkOS AuthKit + BWEZE RLS | WorkOS AuthKit middleware + server-side JWT signing with `jsonwebtoken` |
 | [Kinde](references/kinde.md) | Kinde + BWEZE RLS | Kinde token customization for BWEZE integration |
 | [Stytch](references/stytch.md) | Stytch + BWEZE RLS | Stytch session tokens for BWEZE integration |
-| [Better Auth](references/better-auth.md) | Better Auth + BWEZE RLS | Self-hosted auth running in your BWEZE Postgres — no third-party SaaS, no per-MAU cost |
+| [Better Auth](references/better-auth.md) | Better Auth + BWEZE RLS | Self-hosted auth running in your BWEZE Postgres - no third-party SaaS, no per-MAU cost |
 
 ## Payment Facilitators
 
@@ -50,15 +50,15 @@ This skill covers integrating **third-party providers** with BWEZE. Currently tw
 ## Choosing a Provider
 
 **Auth**
-- **Clerk** — Simplest setup; JWT Template handles signing, no server code needed
-- **Auth0** — Flexible; uses post-login Actions for claim injection
-- **WorkOS** — Enterprise-focused; AuthKit middleware + server-side JWT signing
-- **Kinde** — Developer-friendly; built-in token customization
-- **Stytch** — API-first; session-based token flow
-- **Better Auth** — Self-hosted in your Postgres; no SaaS vendor; you own the user table. Pairs cleanly with BWEZE's Postgres via a connection string + a small bridge route. Requires a one-time `REVOKE` after migrate to seal PostgREST exposure.
+- **Clerk** - Simplest setup; JWT Template handles signing, no server code needed
+- **Auth0** - Flexible; uses post-login Actions for claim injection
+- **WorkOS** - Enterprise-focused; AuthKit middleware + server-side JWT signing
+- **Kinde** - Developer-friendly; built-in token customization
+- **Stytch** - API-first; session-based token flow
+- **Better Auth** - Self-hosted in your Postgres; no SaaS vendor; you own the user table. Pairs cleanly with BWEZE's Postgres via a connection string + a small bridge route. Requires a one-time `REVOKE` after migrate to seal PostgREST exposure.
 
 **Payment facilitators**
-- **OKX x402** — Onchain pay-per-use via USDG on X Layer; zero gas for the payer
+- **OKX x402** - Onchain pay-per-use via USDG on X Layer; zero gas for the payer
 
 ## Setup
 
@@ -79,15 +79,15 @@ Refer to the specific `references/<provider>.md` file for complete examples.
 ## Best Practices
 
 **Auth**
-- All auth provider user IDs are strings (not UUIDs) — always use `TEXT` columns for `user_id`
+- All auth provider user IDs are strings (not UUIDs) - always use `TEXT` columns for `user_id`
 - Use `requesting_user_id()` instead of `auth.uid()` for RLS policies
-- Pass the JWT via `accessToken` — a static string, not a function; for short-lived tokens (Clerk) sync refreshes with `client.setAccessToken()`
+- Pass the JWT via `accessToken` - a static string, not a function; for short-lived tokens (Clerk) sync refreshes with `client.setAccessToken()`
 - Always get the JWT secret via `npx @bweze/cli secrets get JWT_SECRET`
 
 **Payment facilitators (x402)**
-- Always check the result of the database `insert(...)` after settlement — settlement takes money onchain before the insert runs; a silent DB failure loses the record
+- Always check the result of the database `insert(...)` after settlement - settlement takes money onchain before the insert runs; a silent DB failure loses the record
 - Add `UNIQUE` to the `tx_hash` column to prevent duplicate records from retries
-- Verify EIP-712 domain (`name`, `version`) against the token contract's on-chain `DOMAIN_SEPARATOR` — wrong values produce `Invalid Authority` errors
+- Verify EIP-712 domain (`name`, `version`) against the token contract's on-chain `DOMAIN_SEPARATOR` - wrong values produce `Invalid Authority` errors
 - Use a `MOCK_OKX_FACILITATOR` env flag for local dev so the full flow can be exercised without real funds
 
 ## Common Mistakes
@@ -96,8 +96,8 @@ Refer to the specific `references/<provider>.md` file for complete examples.
 
 | Mistake | Solution |
 |---------|----------|
-| Using `auth.uid()` for RLS | Use `requesting_user_id()` — third-party IDs are strings, not UUIDs |
-| Using UUID columns for `user_id` | Use `TEXT` — all supported providers use string-format IDs |
+| Using `auth.uid()` for RLS | Use `requesting_user_id()` - third-party IDs are strings, not UUIDs |
+| Using UUID columns for `user_id` | Use `TEXT` - all supported providers use string-format IDs |
 | Hardcoding the JWT secret | Always retrieve via `npx @bweze/cli secrets get JWT_SECRET` |
 | Missing `requesting_user_id()` function | Must be created before RLS policies will work |
 
@@ -106,6 +106,6 @@ Refer to the specific `references/<provider>.md` file for complete examples.
 | Mistake | Solution |
 |---------|----------|
 | Using an OKX exchange trading API key | Create a separate Web3 API key at `web3.okx.com/onchainos/dev-portal` |
-| Wrong EIP-712 domain values | Read the token contract's `DOMAIN_SEPARATOR` — for USDG on X Layer use `name: "Global Dollar"`, `version: "1"` |
-| Ignoring DB insert error after settlement | Always destructure `{ error }` and log/handle it — money has already moved |
+| Wrong EIP-712 domain values | Read the token contract's `DOMAIN_SEPARATOR` - for USDG on X Layer use `name: "Global Dollar"`, `version: "1"` |
+| Ignoring DB insert error after settlement | Always destructure `{ error }` and log/handle it - money has already moved |
 | `MOCK_OKX_FACILITATOR=true` in production | Mock mode is demo-only; it returns fake tx hashes and bypasses verification |

@@ -1,6 +1,6 @@
 # DB health
 
-Postgres system views (`pg_stat_*`, `pg_locks`, `pg_class`) exposed as named checks. The primary primitive for **current database state** — connection pool, query performance, lock contention, storage, index efficacy.
+Postgres system views (`pg_stat_*`, `pg_locks`, `pg_class`) exposed as named checks. The primary primitive for **current database state** - connection pool, query performance, lock contention, storage, index efficacy.
 
 ## Command
 
@@ -36,12 +36,12 @@ npx @bweze/cli diagnose db [--check <checks>]
 ## Boundaries
 
 - **Current snapshot, not history.** `pg_stat_*` resets on Postgres restart; numbers are cumulative since last reset, not a time series.
-- **Doesn't show query text inline.** `slow-queries` shows hashed query templates — get the actual SQL from [logs](logs.md) (`postgres.logs`) or `pg_stat_statements.query` directly via `db query`.
+- **Doesn't show query text inline.** `slow-queries` shows hashed query templates - get the actual SQL from [logs](logs.md) (`postgres.logs`) or `pg_stat_statements.query` directly via `db query`.
 - **Doesn't evaluate RLS.** For "which policy is making this query slow," use [policies](policies.md).
 
 ## Example
 
-User reports: "this one query is slow — `SELECT * FROM orders WHERE user_id = ... ORDER BY created_at DESC`".
+User reports: "this one query is slow - `SELECT * FROM orders WHERE user_id = ... ORDER BY created_at DESC`".
 
 ```bash
 # 1. Confirm it's in the slow-query log and check index usage on the table
@@ -56,7 +56,7 @@ npx @bweze/cli logs postgres.logs --limit 100
 
 ## Frequently paired with
 
-- [logs](logs.md) — `postgres.logs` has the query text, plans, and error context behind `slow-queries`/`locks` aggregates
-- [policies](policies.md) — when slow queries are RLS-gated, the policy may be adding hidden joins
-- [metrics](metrics.md) — DB pressure usually shows as EC2 CPU/memory pressure; cross-reference timestamps
-- [advisor](advisor.md) — performance category often pre-flags the same issues `slow-queries` / `index-usage` would surface
+- [logs](logs.md) - `postgres.logs` has the query text, plans, and error context behind `slow-queries`/`locks` aggregates
+- [policies](policies.md) - when slow queries are RLS-gated, the policy may be adding hidden joins
+- [metrics](metrics.md) - DB pressure usually shows as EC2 CPU/memory pressure; cross-reference timestamps
+- [advisor](advisor.md) - performance category often pre-flags the same issues `slow-queries` / `index-usage` would surface

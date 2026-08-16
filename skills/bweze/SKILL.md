@@ -28,7 +28,7 @@ Before using the SDK, create a `.env` file (or `.env.local` for Next.js) in your
 
 #### How to get your URL and anon key
 
-1. **Ensure the project is linked.** Check for `.insforge/project.json` in the project root.
+1. **Ensure the project is linked.** Check for `.bweze/project.json` in the project root.
    - Generate it with `npx @bweze/cli link` for an existing project or `npx @bweze/cli create` for a new project.
 
 2. **Get the anon key** via the CLI:
@@ -37,7 +37,7 @@ Before using the SDK, create a `.env` file (or `.env.local` for Next.js) in your
    npx @bweze/cli secrets get ANON_KEY
    ```
 
-3. **Get the URL** from the `oss_host` field in `.insforge/project.json` (e.g., `https://myapp.us-east.bweze.app`).
+3. **Get the URL** from the `oss_host` field in `.bweze/project.json` (e.g., `https://myapp.us-east.bweze.app`).
 
 4. **Write both values** to the `.env` file using the correct framework prefix (see table below).
 
@@ -141,10 +141,10 @@ const admin = createAdminClient({
 
 | Guide                                                                                                          | When to Use                                                                                                                                                                                                                                                                                                                                                                                            |
 | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [../bweze-cli/references/database/access-control.md](../bweze-cli/references/database/access-control.md) | Backend setup for application-table access control — covers RLS, infinite recursion prevention, `SECURITY DEFINER` patterns, performance tips, and common BWEZE patterns                                                                                                                                                                                                                            |
-| [storage/s3-gateway.md](storage/s3-gateway.md)                                                                 | Fallback path when the consumer is existing S3 tooling (aws CLI, AWS SDKs, rclone, Terraform, boto3) and adopting `@bweze/sdk` is impractical — covers endpoint/region setup, access-key management, path-style addressing, and supported vs. not-supported S3 operations. **Requires BWEZE 2.0.9+.** **Prefer the SDK** ([storage/sdk-integration.md](storage/sdk-integration.md)) for app code |
-| [storage/postgres-rls.md](storage/postgres-rls.md)                                                             | Writing RLS policies for `storage.objects` — owner-only, public-read, path-scoped, team-shared, and the `NULL uploaded_by` caveat for mixed REST + S3 buckets                                                                                                                                                                                                                                          |
-| [../bweze-cli/references/database/vector.md](../bweze-cli/references/database/vector.md)                 | Backend setup for semantic search, recommendations, or RAG — covers the `vector` extension, schema/dimensions, distance operators, HNSW/IVFFlat indexes, and RPC similarity search                                                                                                                                                                                                                     |
+| [../bweze-cli/references/database/access-control.md](../bweze-cli/references/database/access-control.md) | Backend setup for application-table access control - covers RLS, infinite recursion prevention, `SECURITY DEFINER` patterns, performance tips, and common BWEZE patterns                                                                                                                                                                                                                            |
+| [storage/s3-gateway.md](storage/s3-gateway.md)                                                                 | Fallback path when the consumer is existing S3 tooling (aws CLI, AWS SDKs, rclone, Terraform, boto3) and adopting `@bweze/sdk` is impractical - covers endpoint/region setup, access-key management, path-style addressing, and supported vs. not-supported S3 operations. **Requires BWEZE 2.0.9+.** **Prefer the SDK** ([storage/sdk-integration.md](storage/sdk-integration.md)) for app code |
+| [storage/postgres-rls.md](storage/postgres-rls.md)                                                             | Writing RLS policies for `storage.objects` - owner-only, public-read, path-scoped, team-shared, and the `NULL uploaded_by` caveat for mixed REST + S3 buckets                                                                                                                                                                                                                                          |
+| [../bweze-cli/references/database/vector.md](../bweze-cli/references/database/vector.md)                 | Backend setup for semantic search, recommendations, or RAG - covers the `vector` extension, schema/dimensions, distance operators, HNSW/IVFFlat indexes, and RPC similarity search                                                                                                                                                                                                                     |
 | [ai/chat-completions.md](ai/chat-completions.md)                                                               | Text generation, structured answers, and streaming chat through OpenRouter                                                                                                                                                                                                                                                                                                                             |
 | [ai/image-generation.md](ai/image-generation.md)                                                               | Image generation/editing through OpenRouter, then durable storage in BWEZE Storage                                                                                                                                                                                                                                                                                                                  |
 | [ai/video-generation.md](ai/video-generation.md)                                                               | Async OpenRouter video jobs, status polling, and storing generated media                                                                                                                                                                                                                                                                                                                               |
@@ -175,7 +175,7 @@ The real-time SDK is for frontend event handling and messaging. Configure channe
 
 ### Backend Configuration
 
-Supported project config knobs are managed via the CLI — use
+Supported project config knobs are managed via the CLI - use
 `npx @bweze/cli config export/plan/apply` for auth redirect URLs,
 verification flags, password policy, auth SMTP settings, storage upload size,
 realtime/schedule retention, and cloud deployment subdomain. OAuth providers,
@@ -187,7 +187,7 @@ skill's Configuration section.
 
 When a code change in this skill depends on a **schema migration**, **new RLS policy**, **OAuth provider config change**, or any other backend change that affects prod behavior, create a backend branch first. Branches share `JWT_SECRET` (existing user JWTs keep working) but get a fresh database + EC2 + `API_KEY` / `ANON_KEY`, so you can test the SDK + backend change end-to-end in isolation.
 
-The full branching workflow lives in the **bweze-cli** skill — see [branch](../bweze-cli/references/branch/overview.md) for the decision guide and lifecycle commands. Typical loop:
+The full branching workflow lives in the **bweze-cli** skill - see [branch](../bweze-cli/references/branch/overview.md) for the decision guide and lifecycle commands. Typical loop:
 
 ```bash
 npx @bweze/cli branch create feat-x --mode schema-only
@@ -228,4 +228,4 @@ All SDK methods return `{ data, error }`.
 - **Always local build before deploy**: Prevents wasted build resources and faster debugging
 - **SDK package**: Use `@bweze/sdk` directly for all features including authentication.
 - **Deployment**: Include a `vercel.json` in the project root for SPA routing (React, React Router apps). The `download-template` tool includes this automatically.
-- **Branching for risky backend changes**: If your SDK code depends on a new schema, RLS policy, or auth config change, create a branch via `npx @bweze/cli branch create` first — see the **bweze-cli** skill's [branch](../bweze-cli/references/branch/overview.md) reference. After `branch create` / `branch switch`, update the app's BWEZE URL and anon-key env values, then **restart the dev server**.
+- **Branching for risky backend changes**: If your SDK code depends on a new schema, RLS policy, or auth config change, create a branch via `npx @bweze/cli branch create` first - see the **bweze-cli** skill's [branch](../bweze-cli/references/branch/overview.md) reference. After `branch create` / `branch switch`, update the app's BWEZE URL and anon-key env values, then **restart the dev server**.

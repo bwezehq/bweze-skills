@@ -5,10 +5,10 @@ Stytch handles authentication via email magic links on the client side. On the s
 
 ## Key packages
 
-- `@stytch/nextjs` + `@stytch/vanilla-js` — Stytch frontend SDK
-- `stytch` — Stytch Node SDK (server-side session validation)
-- `@bweze/sdk` — BWEZE client
-- `jsonwebtoken` — for server-side JWT signing
+- `@stytch/nextjs` + `@stytch/vanilla-js` - Stytch frontend SDK
+- `stytch` - Stytch Node SDK (server-side session validation)
+- `@bweze/sdk` - BWEZE client
+- `jsonwebtoken` - for server-side JWT signing
 
 ## Recommended Workflow
 
@@ -85,7 +85,7 @@ export default function Login() {
 
 ## Authentication callback
 
-- **Must be a client-side page** at `app/authenticate/page.tsx`, NOT a route handler — Stytch SDK handles magic link tokens on the client
+- **Must be a client-side page** at `app/authenticate/page.tsx`, NOT a route handler - Stytch SDK handles magic link tokens on the client
 - Use `useStytch().magicLinks.authenticate()` to exchange the token
 - Use a `useRef` to prevent double-authentication (React strict mode / re-renders)
 - Check `stytch_token_type === 'magic_links'` from search params before authenticating
@@ -174,7 +174,7 @@ export async function createBWEZEClient() {
 
 ## Database setup
 
-- Stytch user IDs are strings (e.g. `user-test-...`), not UUIDs — use `TEXT` columns for `user_id`
+- Stytch user IDs are strings (e.g. `user-test-...`), not UUIDs - use `TEXT` columns for `user_id`
 - Create a `requesting_user_id()` SQL function that extracts the `sub` claim from `auth.jwt()` as text
 - Set `user_id` column default to `requesting_user_id()` so it auto-populates on insert
 - Enable RLS and create policies that compare `user_id = requesting_user_id()`
@@ -204,7 +204,7 @@ $$;
 
 | Mistake | Solution |
 |---------|----------|
-| ❌ Making the callback a route handler | ✅ Must be a client-side page — Stytch SDK handles magic links on the client |
+| ❌ Making the callback a route handler | ✅ Must be a client-side page - Stytch SDK handles magic links on the client |
 | ❌ Forgetting redirect URL / domain in Stytch dashboard | ✅ Add both `http://localhost:3000/authenticate` and `http://localhost:3000` |
 | ❌ Not guarding against double-authentication | ✅ Use a `useRef` to prevent re-entry on re-renders |
-| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` — Stytch IDs are strings, not UUIDs |
+| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` - Stytch IDs are strings, not UUIDs |

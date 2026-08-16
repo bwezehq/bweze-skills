@@ -2,7 +2,7 @@
 
 Use BWEZE SDK to upload, download, and manage files in your frontend application.
 
-> **Recommended path.** Prefer `@bweze/sdk` for all storage work — it is the supported default for app code (browser and server), handles auth/session scoping, and keeps project-admin credentials in backend/admin tooling. Reach for the [S3-compatible gateway](./s3-gateway.md) only when the consumer is existing S3 tooling (CI pipelines running `aws s3 cp` / `rclone sync`, Terraform, backup/log shippers) where adopting the SDK would be impractical.
+> **Recommended path.** Prefer `@bweze/sdk` for all storage work - it is the supported default for app code (browser and server), handles auth/session scoping, and keeps project-admin credentials in backend/admin tooling. Reach for the [S3-compatible gateway](./s3-gateway.md) only when the consumer is existing S3 tooling (CI pipelines running `aws s3 cp` / `rclone sync`, Terraform, backup/log shippers) where adopting the SDK would be impractical.
 
 ## Setup
 

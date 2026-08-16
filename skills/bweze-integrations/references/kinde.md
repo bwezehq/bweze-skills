@@ -5,9 +5,9 @@ Kinde **does not support custom JWT signing keys**, so you sign a separate JWT s
 
 ## Key packages
 
-- `@kinde-oss/kinde-auth-nextjs` — Kinde SDK for Next.js
-- `@bweze/sdk` — BWEZE client
-- `jsonwebtoken` + `@types/jsonwebtoken` — for server-side JWT signing
+- `@kinde-oss/kinde-auth-nextjs` - Kinde SDK for Next.js
+- `@bweze/sdk` - BWEZE client
+- `jsonwebtoken` + `@types/jsonwebtoken` - for server-side JWT signing
 
 ## Recommended Workflow
 
@@ -49,7 +49,7 @@ export const GET = handleAuth();
 
 ## BWEZE client
 
-- Create a server-side utility at `lib/bweze.ts` — cannot be used in client components
+- Create a server-side utility at `lib/bweze.ts` - cannot be used in client components
 - Use `getKindeServerSession()` to get `getUser`
 - Sign a JWT with `jsonwebtoken` using `process.env.BWEZE_JWT_SECRET`
 - Required claims: `sub` (from `user.id`), `role: "authenticated"`, `aud: "bweze-api"`, `email`
@@ -89,7 +89,7 @@ export async function createBWEZEClient() {
 
 ## Database setup
 
-- Kinde user IDs are strings (e.g. `kp_1234abcd`), not UUIDs — use `TEXT` columns for `user_id`
+- Kinde user IDs are strings (e.g. `kp_1234abcd`), not UUIDs - use `TEXT` columns for `user_id`
 - Create a `requesting_user_id()` SQL function that extracts the `sub` claim from `auth.jwt()` as text
 - Set `user_id` column default to `requesting_user_id()` so it auto-populates on insert
 - Enable RLS and create policies that compare `user_id = requesting_user_id()`
@@ -121,6 +121,6 @@ $$;
 
 | Mistake | Solution |
 |---------|----------|
-| ❌ Using Kinde's JWT directly with BWEZE | ✅ Kinde doesn't sign with your secret — sign a separate JWT server-side |
-| ❌ Using BWEZE client in a client component | ✅ `getKindeServerSession` is server-only — keep the utility server-side |
-| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` — Kinde IDs are strings, not UUIDs |
+| ❌ Using Kinde's JWT directly with BWEZE | ✅ Kinde doesn't sign with your secret - sign a separate JWT server-side |
+| ❌ Using BWEZE client in a client component | ✅ `getKindeServerSession` is server-only - keep the utility server-side |
+| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` - Kinde IDs are strings, not UUIDs |

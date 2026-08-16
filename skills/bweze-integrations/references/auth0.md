@@ -5,8 +5,8 @@ Auth0 signs a BWEZE-compatible JWT inside a **Post Login Action**, embeds it as 
 
 ## Key packages
 
-- `@auth0/nextjs-auth0` — Auth0 SDK for Next.js (use v4+)
-- `@bweze/sdk` — BWEZE client
+- `@auth0/nextjs-auth0` - Auth0 SDK for Next.js (use v4+)
+- `@bweze/sdk` - BWEZE client
 
 ## Recommended Workflow
 
@@ -65,11 +65,11 @@ exports.onExecutePostLogin = async (event, api) => {
 };
 ```
 
-## Auth0 v4 SDK — `beforeSessionSaved`
+## Auth0 v4 SDK - `beforeSessionSaved`
 
 Auth0 v4 SDK **filters out custom claims** from the ID token by default. You **must** configure `beforeSessionSaved` on `Auth0Client` to extract the BWEZE token into the session. Without this, `getSession().user` will not contain the token.
 
-**The `idToken` parameter is a raw JWT string**, not a decoded object — you must split and base64url-decode it:
+**The `idToken` parameter is a raw JWT string**, not a decoded object - you must split and base64url-decode it:
 
 ```typescript
 // lib/auth0.ts
@@ -143,7 +143,7 @@ export async function createBWEZEClient() {
 
 ## Database setup
 
-- Auth0 user IDs are strings (e.g. `auth0|64a...`), not UUIDs — use `TEXT` columns for `user_id`
+- Auth0 user IDs are strings (e.g. `auth0|64a...`), not UUIDs - use `TEXT` columns for `user_id`
 - Create a `requesting_user_id()` SQL function that extracts the `sub` claim from `auth.jwt()` as text
 - Set `user_id` column default to `requesting_user_id()` so it auto-populates on insert
 - Enable RLS and create policies that compare `user_id = requesting_user_id()`
@@ -174,7 +174,7 @@ $$;
 
 | Mistake | Solution |
 |---------|----------|
-| ❌ Forgetting `beforeSessionSaved` | ✅ Always configure it — without it the BWEZE token is silently dropped |
-| ❌ Treating `idToken` as a decoded object | ✅ It's a raw JWT string — split and base64url-decode the payload |
-| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` — Auth0 IDs are strings, not UUIDs |
-| ❌ Creating `app/api/auth/[auth0]/route.js` | ✅ Not needed in v4 — `auth0.middleware()` handles it |
+| ❌ Forgetting `beforeSessionSaved` | ✅ Always configure it - without it the BWEZE token is silently dropped |
+| ❌ Treating `idToken` as a decoded object | ✅ It's a raw JWT string - split and base64url-decode the payload |
+| ❌ Using `auth.uid()` for RLS policies | ✅ Use `requesting_user_id()` - Auth0 IDs are strings, not UUIDs |
+| ❌ Creating `app/api/auth/[auth0]/route.js` | ✅ Not needed in v4 - `auth0.middleware()` handles it |

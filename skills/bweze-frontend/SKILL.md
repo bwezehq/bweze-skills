@@ -1,7 +1,7 @@
 ---
 name: bweze-frontend
 description: >-
-  Use this skill when deploying or managing a BWEZE FRONTEND project — a web app or static site hosted on BWEZE (the Vercel/Coolify-style surface). Covers git-based deploys, build and environment configuration, custom domains (buy one through BWEZE or connect your own, with automatic SSL), a free *.bweze.app subdomain, traffic analytics, scheduled cron jobs, an IP firewall, deploy/runtime logs, and the project terminal. Trigger on requests like: deploy my site, host my frontend, put my app online, add a custom domain, buy a domain, connect my domain, set env vars, see my traffic or analytics, schedule a job, block an IP. For the backend/data surface (Postgres, auth, storage, functions, the @bweze/sdk data client) use the bweze skill; for command-line project management use bweze-cli; for diagnosing failures use bweze-debug.
+  Use this skill when deploying or managing a BWEZE FRONTEND project - a web app or static site hosted on BWEZE (the Vercel/Coolify-style surface). Covers git-based deploys, build and environment configuration, custom domains (buy one through BWEZE or connect your own, with automatic SSL), a free *.bweze.app subdomain, traffic analytics, scheduled cron jobs, an IP firewall, deploy/runtime logs, and the project terminal. Trigger on requests like: deploy my site, host my frontend, put my app online, add a custom domain, buy a domain, connect my domain, set env vars, see my traffic or analytics, schedule a job, block an IP. For the backend/data surface (Postgres, auth, storage, functions, the @bweze/sdk data client) use the bweze skill; for command-line project management use bweze-cli; for diagnosing failures use bweze-debug.
 license: Apache-2.0
 metadata:
   author: bweze
@@ -12,7 +12,7 @@ metadata:
 
 # BWEZE Frontend Hosting Skill
 
-This skill covers **frontend (web app) projects** on BWEZE — the hosting and deploy
+This skill covers **frontend (web app) projects** on BWEZE - the hosting and deploy
 surface. For the backend data surface (Postgres, auth, storage, edge functions,
 realtime, the `@bweze/sdk` data client) use the **bweze** skill instead.
 
@@ -20,9 +20,9 @@ realtime, the `@bweze/sdk` data client) use the **bweze** skill instead.
 
 Every BWEZE project has a type:
 
-- **`frontend`** — a web app / site deploy. Push from git; it goes live on
+- **`frontend`** - a web app / site deploy. Push from git; it goes live on
   `*.bweze.app` with automatic SSL. This skill.
-- **`backend`** — a Postgres data stack (auth, storage, realtime, functions). Use
+- **`backend`** - a Postgres data stack (auth, storage, realtime, functions). Use
   the `bweze` skill.
 
 You choose the type at creation. Domains, deploys, env, analytics, cron, and
@@ -38,7 +38,7 @@ bweze projects create my-app --type frontend
 ```
 
 ```ts
-// SDK — configure with your BWEZE key
+// SDK - configure with your BWEZE key
 import { createClient } from "@bweze/sdk";
 const bweze = createClient({ bweze: { apiKey: process.env.BWEZE_API_KEY! } });
 await bweze.projects.create({ name: "my-app", type: "frontend" });
@@ -51,7 +51,7 @@ curl -X POST https://api.bweze.com/v1/projects \
   -d '{ "name": "my-app", "type": "frontend" }'
 ```
 
-## The frontend surface — what you can do
+## The frontend surface - what you can do
 
 | Area | How | Details |
 |---|---|---|
@@ -84,7 +84,7 @@ await bweze.projects.createFirewallRule(projectId, { action: "block", cidr: "1.2
 
 ## Choosing between this skill and the others
 
-- **bweze-frontend** (this): host a web app — deploys, domains, analytics, cron, firewall, env, logs.
-- **bweze**: the data/backend surface — database CRUD, auth, storage, functions, realtime, payments via `@bweze/sdk`.
+- **bweze-frontend** (this): host a web app - deploys, domains, analytics, cron, firewall, env, logs.
+- **bweze**: the data/backend surface - database CRUD, auth, storage, functions, realtime, payments via `@bweze/sdk`.
 - **bweze-cli**: command-line project management (`@bweze/cli`) across both project types.
 - **bweze-debug**: diagnose deploy, DNS, SDK, and runtime failures.

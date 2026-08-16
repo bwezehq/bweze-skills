@@ -1,10 +1,10 @@
 # S3-Compatible Storage Gateway
 
-> **Default to the SDK.** `@bweze/sdk` (see [sdk-integration.md](./sdk-integration.md)) is the recommended path for storage work — it is the supported default for app code, handles auth/session scoping, and avoids shipping long-lived project-admin credentials. Use the S3 gateway only when the consumer is existing S3 tooling (CI, `rclone`, Terraform, backup/log shippers) and adopting the SDK would be impractical.
+> **Default to the SDK.** `@bweze/sdk` (see [sdk-integration.md](./sdk-integration.md)) is the recommended path for storage work - it is the supported default for app code, handles auth/session scoping, and avoids shipping long-lived project-admin credentials. Use the S3 gateway only when the consumer is existing S3 tooling (CI, `rclone`, Terraform, backup/log shippers) and adopting the SDK would be impractical.
 
-BWEZE Storage speaks the **AWS S3 protocol** at `/storage/v1/s3`. Any SigV4-signing client — `aws` CLI, AWS SDKs, `rclone`, Terraform, custom scripts — can read and write the same buckets exposed through the `@bweze/sdk`, REST API, and Dashboard.
+BWEZE Storage speaks the **AWS S3 protocol** at `/storage/v1/s3`. Any SigV4-signing client - `aws` CLI, AWS SDKs, `rclone`, Terraform, custom scripts - can read and write the same buckets exposed through the `@bweze/sdk`, REST API, and Dashboard.
 
-> **Requires BWEZE 2.0.9 or later.** The S3 gateway was introduced in 2.0.9; earlier versions do not expose `/storage/v1/s3` and the admin endpoints under `/api/storage/s3/*` return 404. Confirm the project's server version before configuring any S3 client — on Cloud, check the Dashboard footer or `GET /api/health`; self-hosted, check your deployment's image tag.
+> **Requires BWEZE 2.0.9 or later.** The S3 gateway was introduced in 2.0.9; earlier versions do not expose `/storage/v1/s3` and the admin endpoints under `/api/storage/s3/*` return 404. Confirm the project's server version before configuring any S3 client - on Cloud, check the Dashboard footer or `GET /api/health`; self-hosted, check your deployment's image tag.
 >
 > **Cloud only.** The S3 gateway is available on BWEZE Cloud projects. Self-hosted deployments can achieve the same capability by running the platform against a MinIO or AWS S3 bucket and exposing `/storage/v1/s3` behind their own ingress.
 
@@ -16,7 +16,7 @@ Pick the S3 gateway when the consumer is **server-side tooling that already spea
 - Migrating existing S3-based automation (Terraform `aws_s3_object`, backup scripts, log shippers) without rewriting it.
 - Server/worker uploads where embedding `@bweze/sdk` is overkill.
 
-Prefer the [BWEZE SDK](./sdk-integration.md) for browser direct uploads, public download URLs, bucket visibility management, and typed helpers — the SDK is built for app code and does not require handing out long-lived S3 credentials.
+Prefer the [BWEZE SDK](./sdk-integration.md) for browser direct uploads, public download URLs, bucket visibility management, and typed helpers - the SDK is built for app code and does not require handing out long-lived S3 credentials.
 
 ## Setup
 
@@ -29,7 +29,7 @@ Both values are shown in the Dashboard under **Storage → Settings → S3 Confi
 | Endpoint | `https://{app-key}.{region}.bweze.app/storage/v1/s3` |
 | Region | `us-east-2` (or the value set via `AWS_REGION`) |
 
-Clients **must** use path-style URLs (`forcePathStyle: true` / `addressing_style = path` / `force_path_style = true`). Virtual-hosted style (`{bucket}.endpoint/...`) is not supported — configurations that omit path-style will fail with signature or DNS errors.
+Clients **must** use path-style URLs (`forcePathStyle: true` / `addressing_style = path` / `force_path_style = true`). Virtual-hosted style (`{bucket}.endpoint/...`) is not supported - configurations that omit path-style will fail with signature or DNS errors.
 
 ### Access keys
 
@@ -177,7 +177,7 @@ Streaming uploads (`STREAMING-AWS4-HMAC-SHA256-PAYLOAD`) are fully supported, so
 
 ## Shared Namespace with REST and SDK
 
-An object uploaded via the S3 gateway appears immediately in the REST API, the SDK, and the Dashboard — and vice versa. There is no separate S3 bucket namespace to reconcile.
+An object uploaded via the S3 gateway appears immediately in the REST API, the SDK, and the Dashboard - and vice versa. There is no separate S3 bucket namespace to reconcile.
 
 ```bash
 # Upload via S3 protocol
@@ -193,12 +193,12 @@ This means buckets created via `npx @bweze/cli storage create-bucket` are reacha
 
 ## Best Practices
 
-- **Treat S3 keys like production credentials.** They grant project-admin-level access — every bucket is readable and writable regardless of the `public`/`private` flag. Never ship them to browsers, never commit them to source control.
+- **Treat S3 keys like production credentials.** They grant project-admin-level access - every bucket is readable and writable regardless of the `public`/`private` flag. Never ship them to browsers, never commit them to source control.
 - **Scope keys per workload.** Create distinct keys for CI, backups, and each automation tool so you can rotate or revoke them independently. Stay under the project cap of **50 keys**.
 - **Rotate on schedule.** Revoking via `DELETE /api/storage/s3/access-keys/{id}` invalidates the server-side LRU cache immediately.
 - **Always enable path-style addressing** on every client (`forcePathStyle: true` / `addressing_style = path` / `force_path_style = true`).
 - **Capture `secretAccessKey` at creation time.** It is encrypted at rest and cannot be recovered; if lost, revoke and recreate the key.
-- **Prefer the SDK for browser flows, public download URLs, bucket visibility changes, and typed helpers** — the gateway is for server-side S3 tooling, not app code.
+- **Prefer the SDK for browser flows, public download URLs, bucket visibility changes, and typed helpers** - the gateway is for server-side S3 tooling, not app code.
 
 ## Common Mistakes
 
@@ -217,9 +217,9 @@ Reach for the matching alternative instead of trying to make these work:
 |---------|----------|
 | Using virtual-hosted style (`{bucket}.endpoint/...`) | Enable path-style addressing on every client |
 | Losing the `secretAccessKey` after creation | Capture it at creation time; revoke and recreate if lost |
-| Shipping access keys to a browser | Use the SDK or upload-strategy REST helper instead — S3 keys are project-admin |
+| Shipping access keys to a browser | Use the SDK or upload-strategy REST helper instead - S3 keys are project-admin |
 | Expecting presigned URLs to work | Use `POST /api/storage/buckets/:bucket/upload-strategy` for browser direct uploads |
-| Trying to set bucket policies / lifecycle / CORS via S3 | Not supported — manage visibility via the Dashboard / CLI |
+| Trying to set bucket policies / lifecycle / CORS via S3 | Not supported - manage visibility via the Dashboard / CLI |
 
 ## Recommended Workflow
 

@@ -1,4 +1,4 @@
-# npx @bweze/cli domains — custom domains
+# npx @bweze/cli domains - custom domains
 
 Use `domains` when a user wants to search, buy, attach, configure, verify, or resume custom domain setup through the BWEZE CLI.
 

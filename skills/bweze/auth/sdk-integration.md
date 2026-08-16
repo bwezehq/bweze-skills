@@ -27,8 +27,8 @@ For Next.js, Remix, SvelteKit, Nuxt server routes, or any other SSR setup, use `
 
 Registration may require email verification. Implement the flow based on backend config.
 
-1. **Sign up** — Create the user account
-2. **If verification is required** — Branch on `verifyEmailMethod`
+1. **Sign up** - Create the user account
+2. **If verification is required** - Branch on `verifyEmailMethod`
 3. **Complete the verification flow**
    - `code`: user enters the 6-digit code and your app calls `verifyEmail()`
    - `link`: backend verifies the emailed link first, then redirects to your app via `redirectTo`
@@ -58,7 +58,7 @@ try {
     // - On redirect success, show a confirmation message and ask the user to sign in
 
   } else if (data?.accessToken) {
-    // No verification required — user is already signed in
+    // No verification required - user is already signed in
     console.log('Signed in:', data.user)
   }
 
@@ -112,7 +112,7 @@ OAuth uses PKCE. The SDK handles code generation, redirect, and token exchange a
 
 `redirectTo` is where the user lands after auth. The backend appends `?bweze_code=<code>` to it. Set it to a page where your app initializes the SDK or handles the server callback.
 
-### SPA (browser) — fully automatic
+### SPA (browser) - fully automatic
 
 ```javascript
 await bweze.auth.signInWithOAuth('google', {
@@ -125,7 +125,7 @@ Use `additionalParams` only for provider-specific optional hints. Do not pass se
 
 The SDK constructor auto-detects `bweze_code` in the URL, exchanges it for a session, and cleans the URL. Initialize the SDK on the `redirectTo` page.
 
-### SSR (Next.js) — manual exchange required
+### SSR (Next.js) - manual exchange required
 
 The browser auto-detection is for SPA flows. In SSR apps, use `skipBrowserRedirect: true` and exchange the OAuth code in a Route Handler so the refresh token can be written as an httpOnly cookie. See [ssr-integration.md](ssr-integration.md) for the full implementation.
 
@@ -134,8 +134,8 @@ const { data } = await bweze.auth.signInWithOAuth('google', {
   redirectTo: 'https://yourapp.com/api/auth/callback',
   skipBrowserRedirect: true
 })
-// data.codeVerifier — store in httpOnly cookie before redirect
-// data.url — redirect user to this
+// data.codeVerifier - store in httpOnly cookie before redirect
+// data.url - redirect user to this
 ```
 
 ### SDK methods reference
@@ -287,7 +287,7 @@ const { data } = await bweze.auth.setProfile({
 
 ## Email Verification
 
-`verifyEmail()` returns `{ data: { user, accessToken }, error }` and **automatically saves the session** — the user is signed in after successful verification.
+`verifyEmail()` returns `{ data: { user, accessToken }, error }` and **automatically saves the session** - the user is signed in after successful verification.
 
 ```javascript
 // Verify with code (6-digit OTP from email)
@@ -333,7 +333,7 @@ await bweze.auth.sendResetPasswordEmail({
   redirectTo: 'http://localhost:3000/reset-password'
 })
 
-// Step 2: Code method — exchange code for token
+// Step 2: Code method - exchange code for token
 const { data } = await bweze.auth.exchangeResetPasswordToken({
   email: 'user@example.com',
   code: '123456'
@@ -363,7 +363,7 @@ Only render the reset form when `bweze_status=ready` and `token` is present.
 
 - **SPA Web vs Mobile**: Root browser SDK flows use httpOnly refresh cookies + CSRF; mobile/desktop returns refreshToken in response
 - **SSR apps should use SDK SSR helpers**: For Next.js and similar SSR frameworks, use `@bweze/sdk/ssr` for client creation, refresh routes, and auth cookies; use `@bweze/sdk/ssr/middleware` for Proxy/Middleware session updates. See [ssr-integration.md](ssr-integration.md)
-- All methods return `{ data, error }` — always check for errors
+- All methods return `{ data, error }` - always check for errors
 - OAuth uses PKCE flow for security
 
 ---
@@ -373,7 +373,7 @@ Only render the reset form when `bweze_status=ready` and `token` is present.
 1. **Always check auth config first** before implementing
    - Run `npx @bweze/cli metadata --json` to get auth config (`requireEmailVerification`, `verifyEmailMethod`, `resetPasswordMethod`, `oAuthProviders`, `allowedRedirectUrls`)
    - This tells you what features to implement
-   - To change supported project config such as redirect URLs, verification flags, password policy, or auth SMTP settings, use `npx @bweze/cli config apply` — see the **bweze-cli** skill's Configuration section. OAuth providers and external app setup are dashboard/provider-managed.
+   - To change supported project config such as redirect URLs, verification flags, password policy, or auth SMTP settings, use `npx @bweze/cli config apply` - see the **bweze-cli** skill's Configuration section. OAuth providers and external app setup are dashboard/provider-managed.
 
 2. **The sign-up page must handle the full registration flow**
    - After calling `signUp()`, if `requireEmailVerification` is true, branch on `verifyEmailMethod`
@@ -397,7 +397,7 @@ Only render the reset form when `bweze_status=ready` and `token` is present.
      // Usually: switch UI to show 6-digit code input and keep the user in the verification flow
      // If verifyEmailMethod === "link", show a "check your email" state instead
    } else if (data?.accessToken) {
-     // No verification needed — user is signed in, navigate to app
+     // No verification needed - user is signed in, navigate to app
    }
    ```
 
@@ -434,7 +434,7 @@ if (data?.requireEmailVerification) {
   // If verifyEmailMethod === "code":
   //   Show 6-digit code input on the SAME page, then call:
   const { data: verifyData, error } = await bweze.auth.verifyEmail({ email, otp: userEnteredCode })
-  //   On success, user is automatically signed in — navigate to the app
+  //   On success, user is automatically signed in - navigate to the app
 
   // If verifyEmailMethod === "link":
   //   Pass redirectTo to signUp() / resendVerificationEmail()
